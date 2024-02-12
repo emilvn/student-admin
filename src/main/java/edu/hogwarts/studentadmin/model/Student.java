@@ -6,7 +6,8 @@ import java.time.LocalDate;
 
 @Entity(name = "student")
 public class Student {
-    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
+    private @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
     private String firstName;
     private String middleName;
     private String lastName;
@@ -17,11 +18,11 @@ public class Student {
     private int graduationYear;
     private boolean graduated;
 
-    public Student(){
+    public Student() {
 
     }
 
-    public Student(Long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated){
+    public Student(Long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;

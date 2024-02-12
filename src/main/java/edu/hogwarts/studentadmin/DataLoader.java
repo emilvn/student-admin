@@ -35,7 +35,7 @@ public class DataLoader implements CommandLineRunner {
 
     }
 
-    private void createHouses(){
+    private void createHouses() {
         var gryffindorColors = new ArrayList<String>();
         gryffindorColors.add("Scarlet");
         gryffindorColors.add("Gold");
@@ -64,12 +64,12 @@ public class DataLoader implements CommandLineRunner {
         houseRepository.save(slytherin);
     }
 
-    private void createStudents(){
+    private void createStudents() {
         var gryffindor = houseRepository.findById(1L);
         var hufflepuff = houseRepository.findById(2L);
         var ravenclaw = houseRepository.findById(3L);
         var slytherin = houseRepository.findById(4L);
-        if(gryffindor.isEmpty() || hufflepuff.isEmpty() || ravenclaw.isEmpty() || slytherin.isEmpty()){
+        if (gryffindor.isEmpty() || hufflepuff.isEmpty() || ravenclaw.isEmpty() || slytherin.isEmpty()) {
             return;
         }
         var harry = new Student(1L, "Harry", "James", "Potter", LocalDate.of(1980, 7, 31), gryffindor.get(), false, 1991, 1998, true);
@@ -89,12 +89,12 @@ public class DataLoader implements CommandLineRunner {
         studentRepository.saveAll(Arrays.asList(students));
     }
 
-    private void createTeachers(){
+    private void createTeachers() {
         var gryffindor = houseRepository.findById(1L);
         var hufflepuff = houseRepository.findById(2L);
         var ravenclaw = houseRepository.findById(3L);
         var slytherin = houseRepository.findById(4L);
-        if(gryffindor.isEmpty() || hufflepuff.isEmpty() || ravenclaw.isEmpty() || slytherin.isEmpty()){
+        if (gryffindor.isEmpty() || hufflepuff.isEmpty() || ravenclaw.isEmpty() || slytherin.isEmpty()) {
             return;
         }
         var mcGonagall = new Teacher(1L, "Minerva", "", "McGonagall", LocalDate.of(1935, 10, 4), gryffindor.get(), true, EmpType.TENURED, LocalDate.of(1956, 9, 1), null);

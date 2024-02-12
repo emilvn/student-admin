@@ -4,9 +4,10 @@ import jakarta.persistence.*;
 
 import java.util.List;
 
-@Entity(name="course")
+@Entity(name = "course")
 public class Course {
-    private @Id @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
+    private @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
     private String subject;
     private int schoolYear;
     private boolean current;
