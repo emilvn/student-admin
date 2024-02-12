@@ -4,17 +4,12 @@ import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 @RestController
-@RequestMapping(value = "/teachers")
+@RequestMapping("/teachers")
 public class TeacherController {
     private final TeacherRepository teacherRepository;
 
@@ -22,7 +17,7 @@ public class TeacherController {
         this.teacherRepository = teacherRepository;
     }
 
-    @RequestMapping(method = GET)
+    @GetMapping
     public ResponseEntity<List<Teacher>> getAll() {
         var teachers = this.teacherRepository.findAll();
         if (!teachers.isEmpty()) {
@@ -31,7 +26,7 @@ public class TeacherController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @RequestMapping(method = GET, value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Teacher> get(@PathVariable("id") Long id) {
         var teacher = this.teacherRepository.findById(id);
         if (teacher.isPresent()) {
@@ -40,15 +35,15 @@ public class TeacherController {
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = POST)
-    public ResponseEntity<Teacher> create(@RequestBody Teacher teacher) {
+    @PostMapping
+    public ResponseEntity<Object> create(@RequestBody Teacher teacher) {
         if(teacher.getFirstName() == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body("First name is required.");
         }
         return ResponseEntity.ok(teacherRepository.save(teacher));
     }
 
-    @RequestMapping(method = PUT, value = "/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Teacher> update(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
         var teacherToUpdate = teacherRepository.findById(id);
         if (teacherToUpdate.isPresent()) {
@@ -68,7 +63,7 @@ public class TeacherController {
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = DELETE, value = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Teacher> delete(@PathVariable("id") Long id) {
         var teacher = this.teacherRepository.findById(id);
 

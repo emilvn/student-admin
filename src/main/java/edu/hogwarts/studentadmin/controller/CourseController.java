@@ -8,17 +8,12 @@ import edu.hogwarts.studentadmin.repository.StudentRepository;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
 @RestController
-@RequestMapping(value = "/courses")
+@RequestMapping("/courses")
 public class CourseController {
 
     private final CourseRepository courseRepository;
@@ -31,7 +26,7 @@ public class CourseController {
         this.studentRepository = studentRepository;
     }
 
-    @RequestMapping(method = GET)
+    @GetMapping
     public ResponseEntity<List<Course>> getAll() {
         var courses = courseRepository.findAll();
         if (!courses.isEmpty()) {
@@ -40,8 +35,8 @@ public class CourseController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @RequestMapping(method = GET, value = "/{id}")
-    public ResponseEntity<Course> get(@PathVariable("id") Long id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> get(@PathVariable("id") Long id) {
         var course = courseRepository.findById(id);
         if (course.isPresent()) {
             return ResponseEntity.ok(course.get());
@@ -49,7 +44,7 @@ public class CourseController {
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = GET, value = "/{id}/teacher")
+    @GetMapping("/{id}/teacher")
     public ResponseEntity<Teacher> getTeacher(@PathVariable("id") Long id) {
         var course = courseRepository.findById(id);
         if (course.isPresent()) {
@@ -62,7 +57,7 @@ public class CourseController {
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = GET, value = "/{id}/students")
+    @GetMapping("/{id}/students")
     public ResponseEntity<List<Student>> getStudents(@PathVariable("id") Long id) {
         var course = courseRepository.findById(id);
         if (course.isPresent()) {
@@ -75,24 +70,31 @@ public class CourseController {
         return ResponseEntity.notFound().build();
     }
 
-    @RequestMapping(method = POST)
-    public ResponseEntity<Course> create(@RequestBody Course course) {
-        if (!validateTeacher(course.getTeacher()) || !validateStudents(course.getStudents())) {
-            return ResponseEntity.badRequest().build();
+    @PostMapping
+    public ResponseEntity<Object> create(@RequestBody Course course) {
+        if (!validateTeacher(course.getTeacher())) {
+            return ResponseEntity.badRequest().body("Invalid teacher.");
         }
+        if (!validateStudents(course.getStudents())) {
+            return ResponseEntity.badRequest().body("Invalid students.");
+        }
+
         var newCourse = courseRepository.save(course);
         return ResponseEntity.ok(newCourse);
     }
 
-    @RequestMapping(method = PUT, value = "/{id}")
-    public ResponseEntity<Course> update(@RequestBody Course course, @PathVariable("id") Long id) {
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> update(@RequestBody Course course, @PathVariable("id") Long id) {
         var courseToUpdate = courseRepository.findById(id);
 
         if (courseToUpdate.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        if (!validateStudents(course.getStudents()) || !validateTeacher(course.getTeacher())) {
-            return ResponseEntity.badRequest().build();
+        if (!validateTeacher(course.getTeacher())) {
+            return ResponseEntity.badRequest().body("Invalid teacher.");
+        }
+        if (!validateStudents(course.getStudents())) {
+            return ResponseEntity.badRequest().body("Invalid students.");
         }
 
         var updatedCourse = courseToUpdate.get();
@@ -105,8 +107,8 @@ public class CourseController {
         return get(id);
     }
 
-    @RequestMapping(method = PUT, value = "/{id}/teacher")
-    public ResponseEntity<Course> updateTeacher(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
+    @PutMapping("/{id}/teacher")
+    public ResponseEntity<Object> updateTeacher(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
         var courseToUpdate = courseRepository.findById(id);
 
         if (courseToUpdate.isEmpty()) {
@@ -122,8 +124,8 @@ public class CourseController {
         return get(id);
     }
 
-    @RequestMapping(method = PUT, value = "/{id}/students")
-    public ResponseEntity<Course> addStudent(@RequestBody Student student, @PathVariable("id") Long id) {
+    @PutMapping("/{id}/students")
+    public ResponseEntity<Object> addStudent(@RequestBody Student student, @PathVariable("id") Long id) {
         var courseToUpdate = courseRepository.findById(id);
 
         if (courseToUpdate.isEmpty()) {
@@ -139,7 +141,7 @@ public class CourseController {
         return get(id);
     }
 
-    @RequestMapping(method = DELETE, value = "/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Course> delete(@PathVariable("id") Long id) {
         var courseToDelete = courseRepository.findById(id);
 
@@ -151,8 +153,8 @@ public class CourseController {
         return ResponseEntity.ok(courseToDelete.get());
     }
 
-    @RequestMapping(method = DELETE, value = "/{id}/teacher")
-    public ResponseEntity<Course> removeTeacher(@PathVariable("id") Long id) {
+    @DeleteMapping("/{id}/teacher")
+    public ResponseEntity<Object> removeTeacher(@PathVariable("id") Long id) {
         var courseToUpdate = courseRepository.findById(id);
 
         if (courseToUpdate.isEmpty()) {
@@ -165,8 +167,8 @@ public class CourseController {
         return get(id);
     }
 
-    @RequestMapping(method = DELETE, value = "/{courseId}/students/{studentId}")
-    public ResponseEntity<Course> removeStudent(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId) {
+    @DeleteMapping("/{courseId}/students/{studentId}")
+    public ResponseEntity<Object> removeStudent(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId) {
         var courseToUpdate = courseRepository.findById(courseId);
 
         if (courseToUpdate.isEmpty()) {
