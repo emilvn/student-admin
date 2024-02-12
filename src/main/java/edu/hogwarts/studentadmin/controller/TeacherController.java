@@ -42,6 +42,9 @@ public class TeacherController {
 
     @RequestMapping(method = POST)
     public ResponseEntity<Teacher> create(@RequestBody Teacher teacher) {
+        if(teacher.getFirstName() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(teacherRepository.save(teacher));
     }
 

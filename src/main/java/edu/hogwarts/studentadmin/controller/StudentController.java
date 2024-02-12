@@ -43,6 +43,9 @@ public class StudentController {
 
     @RequestMapping(method = POST)
     public ResponseEntity<Student> create(@RequestBody Student student) {
+        if(student.getFirstName() == null) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(studentRepository.save(student));
     }
 
