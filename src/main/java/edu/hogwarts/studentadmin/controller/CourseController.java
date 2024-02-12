@@ -80,7 +80,8 @@ public class CourseController {
         if (!validateTeacher(course.getTeacher()) || !validateStudents(course.getStudents())) {
             return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.ok(courseRepository.save(course));
+        var newCourse = courseRepository.save(course);
+        return ResponseEntity.ok(newCourse);
     }
 
     @RequestMapping(method = PUT, value = "/{id}")
@@ -185,13 +186,19 @@ public class CourseController {
     }
 
     private boolean validateTeacher(Teacher teacher) {
+        if(teacher == null) {
+            return false;
+        }
         if (teacher.getId() == null) {
-            return true;
+            return false;
         }
         return teacherRepository.findById(teacher.getId()).isPresent();
     }
 
     private boolean validateStudent(Student student) {
+        if(student == null) {
+            return false;
+        }
         if (student.getId() == null) {
             return false;
         }
@@ -199,6 +206,9 @@ public class CourseController {
     }
 
     private boolean validateStudents(List<Student> students) {
+        if(students == null) {
+            return false;
+        }
         if (students.isEmpty()) {
             return true;
         }
