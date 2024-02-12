@@ -56,7 +56,7 @@ public class StudentController {
 
     @RequestMapping(method = PUT, value = "/{id}")
     public ResponseEntity<Student> update(@RequestBody Student student, @PathVariable("id") Long id){
-        var studentToUpdate = this.studentRepository.findById(id);
+        var studentToUpdate = studentRepository.findById(id);
         if(studentToUpdate.isPresent()){
             studentToUpdate.get().setFirstName(student.getFirstName());
             studentToUpdate.get().setMiddleName(student.getMiddleName());
@@ -67,7 +67,17 @@ public class StudentController {
             studentToUpdate.get().setGraduationYear(student.getGraduationYear());
             studentToUpdate.get().setGraduated(student.isGraduated());
             studentToUpdate.get().setHouse(student.getHouse());
-            return ResponseEntity.ok(this.studentRepository.save(studentToUpdate.get()));
+
+            var houseId = student.getHouse().getId();
+            var house = houseRepository.findById(houseId);
+            if(house.isPresent()){
+                studentToUpdate.get().setHouse(house.get());
+            }
+            else{
+                return ResponseEntity.badRequest().build();
+            }
+
+            return ResponseEntity.ok(studentRepository.save(studentToUpdate.get()));
         }
         return ResponseEntity.notFound().build();
     }
