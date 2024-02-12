@@ -67,11 +67,13 @@ public class TeacherController {
     @RequestMapping(method = DELETE, value = "/{id}")
     public ResponseEntity<Teacher> delete(@PathVariable("id") Long id){
         var teacher = this.teacherRepository.findById(id);
-        if(teacher.isPresent()){
-            this.teacherRepository.deleteById(id);
-            return ResponseEntity.ok(teacher.get());
+
+        if(teacher.isEmpty()){
+            return ResponseEntity.notFound().build();
         }
-        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Teacher not found");
+
+        teacherRepository.deleteById(id);
+        return ResponseEntity.ok(teacher.get());
     }
 
 }

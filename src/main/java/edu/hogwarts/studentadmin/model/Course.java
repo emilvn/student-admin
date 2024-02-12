@@ -10,8 +10,8 @@ public class Course {
     private String subject;
     private int schoolYear;
     private boolean current;
-    private @ManyToOne Teacher teacher;
-    private @ManyToMany List<Student> students;
+    private @ManyToOne(fetch = FetchType.EAGER) Teacher teacher;
+    private @ManyToMany(fetch = FetchType.EAGER) List<Student> students;
 
     public Course() {
     }

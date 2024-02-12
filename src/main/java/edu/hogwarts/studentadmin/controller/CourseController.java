@@ -30,7 +30,7 @@ public class CourseController {
 
     @RequestMapping(method = GET)
     public ResponseEntity<List<Course>> getAll(){
-        var courses = this.courseRepository.findAll();
+        var courses = courseRepository.findAll();
         if(!courses.isEmpty()){
             return ResponseEntity.ok(courses);
         }
@@ -39,7 +39,7 @@ public class CourseController {
 
     @RequestMapping(method = GET, value = "/{id}")
     public ResponseEntity<Course> get(@PathVariable("id") Long id){
-        var course = this.courseRepository.findById(id);
+        var course = courseRepository.findById(id);
         if(course.isPresent()){
             return ResponseEntity.ok(course.get());
         }
@@ -48,7 +48,7 @@ public class CourseController {
 
     @RequestMapping(method = GET, value = "/{id}/teacher")
     public ResponseEntity<Teacher> getTeacher(@PathVariable("id") Long id){
-        var course = this.courseRepository.findById(id);
+        var course = courseRepository.findById(id);
         if(course.isPresent()){
             var teacher = course.get().getTeacher();
             if(teacher != null){
@@ -61,7 +61,7 @@ public class CourseController {
 
     @RequestMapping(method = GET, value = "/{id}/students")
     public ResponseEntity<List<Student>> getStudents(@PathVariable("id") Long id){
-        var course = this.courseRepository.findById(id);
+        var course = courseRepository.findById(id);
         if(course.isPresent()){
             var students = course.get().getStudents();
             if(!students.isEmpty()){
@@ -82,101 +82,121 @@ public class CourseController {
 
     @RequestMapping(method = PUT, value = "/{id}")
     public ResponseEntity<Course> update(@RequestBody Course course, @PathVariable("id") Long id){
-        var courseToUpdate = this.courseRepository.findById(id);
-        if(courseToUpdate.isPresent()){
-            var updatedCourse = courseToUpdate.get();
-            updatedCourse.setSubject(course.getSubject());
-            updatedCourse.setSchoolYear(course.getSchoolYear());
-            updatedCourse.setCurrent(course.isCurrent());
-            updatedCourse.setTeacher(course.getTeacher());
-            updatedCourse.setStudents(course.getStudents());
-            courseRepository.save(updatedCourse);
-            return get(id);
+        var courseToUpdate = courseRepository.findById(id);
+
+        if(courseToUpdate.isEmpty()){
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        if(!validateStudents(course.getStudents()) || !validateTeacher(course.getTeacher())){
+            return ResponseEntity.badRequest().build();
+        }
+
+        var updatedCourse = courseToUpdate.get();
+        updatedCourse.setSubject(course.getSubject());
+        updatedCourse.setSchoolYear(course.getSchoolYear());
+        updatedCourse.setCurrent(course.isCurrent());
+        updatedCourse.setTeacher(course.getTeacher());
+        updatedCourse.setStudents(course.getStudents());
+        courseRepository.save(updatedCourse);
+        return get(id);
     }
 
     @RequestMapping(method = PUT, value = "/{id}/teacher")
     public ResponseEntity<Course> updateTeacher(@RequestBody Teacher teacher, @PathVariable("id") Long id){
-        if(teacher.getId() == null){
-            return ResponseEntity.badRequest().build();
-        }
-        var teacherExists = teacherRepository.findById(teacher.getId()).isPresent();
-        if(!teacherExists){
+        var courseToUpdate = courseRepository.findById(id);
+
+        if(courseToUpdate.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-        var courseToUpdate = courseRepository.findById(id);
-        if(courseToUpdate.isPresent()){
-            var updatedCourse = courseToUpdate.get();
-            updatedCourse.setTeacher(teacher);
-            courseRepository.save(updatedCourse);
-            return get(id);
+        if(!validateTeacher(teacher)){
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.notFound().build();
+
+        var updatedCourse = courseToUpdate.get();
+        updatedCourse.setTeacher(teacher);
+        courseRepository.save(updatedCourse);
+        return get(id);
     }
 
     @RequestMapping(method = PUT, value = "/{id}/students")
     public ResponseEntity<Course> addStudent(@RequestBody Student student, @PathVariable("id") Long id){
-        if(student.getId() == null){
-            return ResponseEntity.badRequest().build();
-        }
-        var studentExists = studentRepository.findById(student.getId()).isPresent();
-        if(!studentExists){
+        var courseToUpdate = courseRepository.findById(id);
+
+        if(courseToUpdate.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-        var courseToUpdate = this.courseRepository.findById(id);
-        if(courseToUpdate.isPresent()){
-            var updatedCourse = courseToUpdate.get();
-            updatedCourse.getStudents().add(student);
-            this.courseRepository.save(updatedCourse);
-            courseRepository.flush();
-            return get(id);
+        if(!validateStudent(student)){
+            return ResponseEntity.badRequest().build();
         }
-        return ResponseEntity.notFound().build();
+
+        var updatedCourse = courseToUpdate.get();
+        updatedCourse.getStudents().add(student);
+        courseRepository.save(updatedCourse);
+        return get(id);
     }
 
     @RequestMapping(method = DELETE, value = "/{id}")
-    public ResponseEntity<Course> delete(@PathVariable Long id){
-        var courseToDelete = this.courseRepository.findById(id);
-        if(courseToDelete.isPresent()){
-            this.courseRepository.delete(courseToDelete.get());
-            return ResponseEntity.ok(courseToDelete.get());
+    public ResponseEntity<Course> delete(@PathVariable("id") Long id){
+        var courseToDelete = courseRepository.findById(id);
+
+        if(courseToDelete.isEmpty()){
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        courseRepository.deleteById(id);
+        return ResponseEntity.ok(courseToDelete.get());
     }
 
     @RequestMapping(method = DELETE, value = "/{id}/teacher")
     public ResponseEntity<Course> removeTeacher(@PathVariable("id") Long id){
-        var courseToUpdate = this.courseRepository.findById(id);
-        if(courseToUpdate.isPresent()){
-            var updatedCourse = courseToUpdate.get();
-            updatedCourse.setTeacher(null);
-            this.courseRepository.save(updatedCourse);
-            return get(id);
+        var courseToUpdate = courseRepository.findById(id);
+
+        if(courseToUpdate.isEmpty()){
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        var updatedCourse = courseToUpdate.get();
+        updatedCourse.setTeacher(null);
+        courseRepository.save(updatedCourse);
+        return get(id);
     }
 
     @RequestMapping(method = DELETE, value = "/{courseId}/students/{studentId}")
     public ResponseEntity<Course> removeStudent(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId){
-        var courseToUpdate = this.courseRepository.findById(courseId);
-        if(courseToUpdate.isPresent()){
-            var updatedCourse = courseToUpdate.get();
-            var studentToRemove = updatedCourse.getStudents().stream().filter(student -> student.getId().equals(studentId)).findFirst();
-            if(studentToRemove.isPresent()){
-                updatedCourse.getStudents().remove(studentToRemove.get());
-                this.courseRepository.save(updatedCourse);
-                return get(courseId);
-            }
+        var courseToUpdate = courseRepository.findById(courseId);
+
+        if(courseToUpdate.isEmpty()){
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+
+        var updatedCourse = courseToUpdate.get();
+        var studentToRemove = updatedCourse.getStudents().stream().filter(student -> student.getId().equals(studentId)).findFirst();
+
+        if(studentToRemove.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        updatedCourse.getStudents().remove(studentToRemove.get());
+        courseRepository.save(updatedCourse);
+        return get(courseId);
     }
 
     private boolean validateTeacher(Teacher teacher) {
-        return teacher == null || teacherRepository.findById(teacher.getId()).isPresent();
+        if(teacher.getId() == null){
+            return true;
+        }
+        return teacherRepository.findById(teacher.getId()).isPresent();
+    }
+    private boolean validateStudent(Student student) {
+        if(student.getId() == null){
+            return false;
+        }
+        return studentRepository.findById(student.getId()).isPresent();
     }
     private boolean validateStudents(List<Student> students) {
-        return students.isEmpty() || students.stream().allMatch(student -> studentRepository.findById(student.getId()).isPresent());
+        if(students.isEmpty()){
+            return true;
+        }
+        return students.stream().allMatch(student -> studentRepository.findById(student.getId()).isPresent());
     }
 }

@@ -14,7 +14,7 @@ public class House {
     private String name;
 
     private String founder;
-    private @ElementCollection
+    private @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "colors", joinColumns = @JoinColumn(name = "house_id"))
     List<String> colors;
 
