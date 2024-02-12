@@ -74,17 +74,8 @@ public class CourseController {
 
     @RequestMapping(method = POST)
     public ResponseEntity<Course> create(@RequestBody Course course){
-        if(course.getTeacher() != null) {
-            var teacherExists = teacherRepository.findById(course.getTeacher().getId()).isPresent();
-            if (!teacherExists) {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-        if(!course.getStudents().isEmpty()){
-            var studentsExist = course.getStudents().stream().allMatch(student -> studentRepository.findById(student.getId()).isPresent());
-            if(!studentsExist){
-                return ResponseEntity.badRequest().build();
-            }
+        if(!validateTeacher(course.getTeacher()) || !validateStudents(course.getStudents())){
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok(courseRepository.save(course));
     }
@@ -180,5 +171,12 @@ public class CourseController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.notFound().build();
+    }
+
+    private boolean validateTeacher(Teacher teacher) {
+        return teacher == null || teacherRepository.findById(teacher.getId()).isPresent();
+    }
+    private boolean validateStudents(List<Student> students) {
+        return students.isEmpty() || students.stream().allMatch(student -> studentRepository.findById(student.getId()).isPresent());
     }
 }
