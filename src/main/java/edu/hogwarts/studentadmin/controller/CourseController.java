@@ -72,10 +72,10 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Course course) {
-        if (!validateTeacher(course.getTeacher())) {
+        if (invalidTeacher(course.getTeacher())) {
             return ResponseEntity.badRequest().body("Invalid teacher.");
         }
-        if (!validateStudents(course.getStudents())) {
+        if (invalidStudents(course.getStudents())) {
             return ResponseEntity.badRequest().body("Invalid students.");
         }
 
@@ -90,10 +90,10 @@ public class CourseController {
         if (courseToUpdate.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        if (!validateTeacher(course.getTeacher())) {
+        if (invalidTeacher(course.getTeacher())) {
             return ResponseEntity.badRequest().body("Invalid teacher.");
         }
-        if (!validateStudents(course.getStudents())) {
+        if (invalidStudents(course.getStudents())) {
             return ResponseEntity.badRequest().body("Invalid students.");
         }
 
@@ -114,7 +114,7 @@ public class CourseController {
         if (courseToUpdate.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        if (!validateTeacher(teacher)) {
+        if (invalidTeacher(teacher)) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -124,19 +124,20 @@ public class CourseController {
         return get(id);
     }
 
-    @PutMapping("/{id}/students")
-    public ResponseEntity<Object> addStudent(@RequestBody Student student, @PathVariable("id") Long id) {
+    @PutMapping("/{id}/students/{studentId}")
+    public ResponseEntity<Object> addStudent(@PathVariable("id") Long id, @PathVariable("studentId") Long studentId){
         var courseToUpdate = courseRepository.findById(id);
-
+        var student = studentRepository.findById(studentId);
         if (courseToUpdate.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        if (!validateStudent(student)) {
-            return ResponseEntity.badRequest().build();
+        if (student.isEmpty()) {
+            return ResponseEntity.badRequest().body("Invalid student id.");
         }
 
+        var studentToAdd = student.get();
         var updatedCourse = courseToUpdate.get();
-        updatedCourse.getStudents().add(student);
+        updatedCourse.getStudents().add(studentToAdd);
         courseRepository.save(updatedCourse);
         return get(id);
     }
@@ -187,33 +188,23 @@ public class CourseController {
         return get(courseId);
     }
 
-    private boolean validateTeacher(Teacher teacher) {
+    private boolean invalidTeacher(Teacher teacher) {
         if(teacher == null) {
-            return false;
-        }
-        if (teacher.getId() == null) {
-            return false;
-        }
-        return teacherRepository.findById(teacher.getId()).isPresent();
-    }
-
-    private boolean validateStudent(Student student) {
-        if(student == null) {
-            return false;
-        }
-        if (student.getId() == null) {
-            return false;
-        }
-        return studentRepository.findById(student.getId()).isPresent();
-    }
-
-    private boolean validateStudents(List<Student> students) {
-        if(students == null) {
-            return false;
-        }
-        if (students.isEmpty()) {
             return true;
         }
-        return students.stream().allMatch(student -> studentRepository.findById(student.getId()).isPresent());
+        if (teacher.getId() == null) {
+            return true;
+        }
+        return teacherRepository.findById(teacher.getId()).isEmpty();
+    }
+
+    private boolean invalidStudents(List<Student> students) {
+        if(students == null) {
+            return true;
+        }
+        if (students.isEmpty()) {
+            return false;
+        }
+        return !students.stream().allMatch(student -> studentRepository.findById(student.getId()).isPresent());
     }
 }

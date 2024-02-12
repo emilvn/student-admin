@@ -229,15 +229,11 @@ class CourseControllerTest {
         when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
 
         // Test valid course with valid student
-        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 1}"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students/1"))
                 .andExpect(status().isOk());
 
         // Test valid course with non-existing student id
-        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\": 2}"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students/2"))
                 .andExpect(status().isBadRequest());
     }
 
