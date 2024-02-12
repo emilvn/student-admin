@@ -16,11 +16,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class StudentController {
 
     private final StudentRepository studentRepository;
-    private final HouseRepository houseRepository;
 
-    public StudentController(StudentRepository studentRepository, HouseRepository houseRepository){
+    public StudentController(StudentRepository studentRepository){
         this.studentRepository = studentRepository;
-        this.houseRepository = houseRepository;
     }
 
     @RequestMapping(method = GET)
@@ -43,14 +41,6 @@ public class StudentController {
 
     @RequestMapping(method = POST)
     public ResponseEntity<Student> create(@RequestBody Student student){
-        var houseId = student.getHouse().getId();
-        var house = houseRepository.findById(houseId);
-        if(house.isPresent()){
-            student.setHouse(house.get());
-        }
-        else{
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(studentRepository.save(student));
     }
 
@@ -58,26 +48,18 @@ public class StudentController {
     public ResponseEntity<Student> update(@RequestBody Student student, @PathVariable("id") Long id){
         var studentToUpdate = studentRepository.findById(id);
         if(studentToUpdate.isPresent()){
-            studentToUpdate.get().setFirstName(student.getFirstName());
-            studentToUpdate.get().setMiddleName(student.getMiddleName());
-            studentToUpdate.get().setLastName(student.getLastName());
-            studentToUpdate.get().setDateOfBirth(student.getDateOfBirth());
-            studentToUpdate.get().setPrefect(student.isPrefect());
-            studentToUpdate.get().setEnrollmentYear(student.getEnrollmentYear());
-            studentToUpdate.get().setGraduationYear(student.getGraduationYear());
-            studentToUpdate.get().setGraduated(student.isGraduated());
-            studentToUpdate.get().setHouse(student.getHouse());
-
-            var houseId = student.getHouse().getId();
-            var house = houseRepository.findById(houseId);
-            if(house.isPresent()){
-                studentToUpdate.get().setHouse(house.get());
-            }
-            else{
-                return ResponseEntity.badRequest().build();
-            }
-
-            return ResponseEntity.ok(studentRepository.save(studentToUpdate.get()));
+            var updatedStudent = studentToUpdate.get();
+            updatedStudent.setFirstName(student.getFirstName());
+            updatedStudent.setMiddleName(student.getMiddleName());
+            updatedStudent.setLastName(student.getLastName());
+            updatedStudent.setDateOfBirth(student.getDateOfBirth());
+            updatedStudent.setPrefect(student.isPrefect());
+            updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
+            updatedStudent.setGraduationYear(student.getGraduationYear());
+            updatedStudent.setGraduated(student.isGraduated());
+            updatedStudent.setHouse(student.getHouse());
+            studentRepository.save(updatedStudent);
+            return get(id);
         }
         return ResponseEntity.notFound().build();
     }

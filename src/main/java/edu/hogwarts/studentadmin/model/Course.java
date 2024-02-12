@@ -10,8 +10,8 @@ public class Course {
     private String subject;
     private int schoolYear;
     private boolean current;
-    private @OneToOne Teacher teacher;
-    private @OneToMany List<Student> students;
+    private @ManyToOne Teacher teacher;
+    private @ManyToMany List<Student> students;
 
     public Course() {
     }

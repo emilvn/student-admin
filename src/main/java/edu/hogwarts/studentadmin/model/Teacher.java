@@ -11,7 +11,7 @@ public class Teacher {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private @OneToOne House house;
+    private @ManyToOne House house;
     private boolean headOfHouse;
 
     @Enumerated(EnumType.STRING)

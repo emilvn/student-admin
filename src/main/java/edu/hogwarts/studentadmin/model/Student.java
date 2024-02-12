@@ -11,7 +11,7 @@ public class Student {
     private String middleName;
     private String lastName;
     private LocalDate dateOfBirth;
-    private @OneToOne House house;
+    private @ManyToOne House house;
     private boolean prefect;
     private int enrollmentYear;
     private int graduationYear;

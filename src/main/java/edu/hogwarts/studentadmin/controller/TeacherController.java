@@ -16,11 +16,9 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RequestMapping(value="/teachers")
 public class TeacherController {
     private final TeacherRepository teacherRepository;
-    private final HouseRepository houseRepository;
 
-    public TeacherController(TeacherRepository teacherRepository, HouseRepository houseRepository){
+    public TeacherController(TeacherRepository teacherRepository){
         this.teacherRepository = teacherRepository;
-        this.houseRepository = houseRepository;
     }
 
     @RequestMapping(method = GET)
@@ -43,14 +41,6 @@ public class TeacherController {
 
     @RequestMapping(method = POST)
     public ResponseEntity<Teacher> create(@RequestBody Teacher teacher){
-        var houseId = teacher.getHouse().getId();
-        var house = houseRepository.findById(houseId);
-        if(house.isPresent()){
-            teacher.setHouse(house.get());
-        }
-        else{
-            return ResponseEntity.badRequest().build();
-        }
         return ResponseEntity.ok(teacherRepository.save(teacher));
     }
 
@@ -58,24 +48,18 @@ public class TeacherController {
     public ResponseEntity<Teacher> update(@RequestBody Teacher teacher, @PathVariable("id") Long id){
         var teacherToUpdate = teacherRepository.findById(id);
         if(teacherToUpdate.isPresent()){
-            teacherToUpdate.get().setFirstName(teacher.getFirstName());
-            teacherToUpdate.get().setMiddleName(teacher.getMiddleName());
-            teacherToUpdate.get().setLastName(teacher.getLastName());
-            teacherToUpdate.get().setDateOfBirth(teacher.getDateOfBirth());
-            teacherToUpdate.get().setHeadOfHouse(teacher.isHeadOfHouse());
-            teacherToUpdate.get().setEmployment(teacher.getEmployment());
-            teacherToUpdate.get().setEmploymentStart(teacher.getEmploymentStart());
-            teacherToUpdate.get().setEmploymentEnd(teacher.getEmploymentEnd());
-
-            var houseId = teacher.getHouse().getId();
-            var house = houseRepository.findById(houseId);
-            if(house.isPresent()){
-                teacherToUpdate.get().setHouse(house.get());
-            }
-            else{
-                return ResponseEntity.badRequest().build();
-            }
-            return ResponseEntity.ok(teacherRepository.save(teacherToUpdate.get()));
+            var updatedTeacher = teacherToUpdate.get();
+            updatedTeacher.setFirstName(teacher.getFirstName());
+            updatedTeacher.setMiddleName(teacher.getMiddleName());
+            updatedTeacher.setLastName(teacher.getLastName());
+            updatedTeacher.setDateOfBirth(teacher.getDateOfBirth());
+            updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
+            updatedTeacher.setEmployment(teacher.getEmployment());
+            updatedTeacher.setEmploymentStart(teacher.getEmploymentStart());
+            updatedTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
+            updatedTeacher.setHouse(teacher.getHouse());
+            teacherRepository.save(updatedTeacher);
+            return get(id);
         }
         return ResponseEntity.notFound().build();
     }
