@@ -6,8 +6,9 @@ import java.time.LocalDate;
 
 @Entity(name = "student")
 public class Student {
-    private @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String firstName;
     private String middleName;
     private String lastName;

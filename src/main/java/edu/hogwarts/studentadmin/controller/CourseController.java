@@ -57,7 +57,7 @@ public class CourseController {
             if (teacher != null) {
                 return ResponseEntity.ok(teacher);
             }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }

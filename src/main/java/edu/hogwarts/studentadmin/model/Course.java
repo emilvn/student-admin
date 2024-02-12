@@ -2,6 +2,7 @@ package edu.hogwarts.studentadmin.model;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity(name = "course")
@@ -12,7 +13,7 @@ public class Course {
     private int schoolYear;
     private boolean current;
     private @ManyToOne(fetch = FetchType.EAGER) Teacher teacher;
-    private @ManyToMany(fetch = FetchType.EAGER) List<Student> students;
+    private @ManyToMany(fetch = FetchType.EAGER) List<Student> students = new ArrayList<>();
 
     public Course() {
     }
