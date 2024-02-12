@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +44,7 @@ public class StudentControllerTest {
     void getStudentTest() throws Exception {
         Student student = new Student();
         student.setId(1L);
-        when(studentRepository.findById(1L)).thenReturn(java.util.Optional.of(student));
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
 
         mockMvc.perform(MockMvcRequestBuilders.get("/students/1"))
                 .andExpect(status().isOk());
@@ -68,7 +69,7 @@ public class StudentControllerTest {
     void updateStudentTest() throws Exception {
         Student student = new Student();
         student.setId(1L);
-        when(studentRepository.findById(1L)).thenReturn(java.util.Optional.of(student));
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
         when(studentRepository.save(student)).thenReturn(student);
 
         mockMvc.perform(MockMvcRequestBuilders.put("/students/1")
@@ -86,7 +87,7 @@ public class StudentControllerTest {
     void deleteStudentTest() throws Exception {
         Student student = new Student();
         student.setId(1L);
-        when(studentRepository.findById(1L)).thenReturn(java.util.Optional.of(student));
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/students/1"))
                 .andExpect(status().isOk());
