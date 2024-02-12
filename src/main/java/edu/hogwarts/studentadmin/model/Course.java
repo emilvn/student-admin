@@ -7,8 +7,9 @@ import java.util.List;
 
 @Entity(name = "course")
 public class Course {
-    private @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String subject;
     private int schoolYear;
     private boolean current;
