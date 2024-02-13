@@ -1,7 +1,6 @@
 package edu.hogwarts.studentadmin.service;
 
 import edu.hogwarts.studentadmin.model.Teacher;
-import edu.hogwarts.studentadmin.repository.HouseRepository;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,34 +9,34 @@ import java.util.List;
 @Service
 public class TeacherService {
     private final TeacherRepository teacherRepository;
-    private final HouseRepository houseRepository;
+    private final HouseService houseService;
 
-    public TeacherService(TeacherRepository teacherRepository, HouseRepository houseRepository) {
+    public TeacherService(TeacherRepository teacherRepository, HouseService houseService) {
         this.teacherRepository = teacherRepository;
-        this.houseRepository = houseRepository;
+        this.houseService = houseService;
     }
 
     public List<Teacher> getAll() {
-        return this.teacherRepository.findAll();
+        return teacherRepository.findAll();
     }
 
     public Teacher get(Long id) {
-        return this.teacherRepository.findById(id).orElse(null);
+        return teacherRepository.findById(id).orElse(null);
     }
 
     public Teacher create(Teacher teacher) {
-        var house = this.houseRepository.findById(teacher.getHouse().getId());
-        house.ifPresent(teacher::setHouse);
-        return this.teacherRepository.save(teacher);
+        var house = houseService.get(teacher.getHouse().getId());
+        teacher.setHouse(house);
+        return teacherRepository.save(teacher);
     }
 
     public Teacher update(Teacher teacher, Long id) {
-        var teacherToUpdate = this.teacherRepository.findById(id);
+        var teacherToUpdate = teacherRepository.findById(id);
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
             if(teacher.getHouse() != null) {
-                var house = this.houseRepository.findById(teacher.getHouse().getId());
-                house.ifPresent(updatedTeacher::setHouse);
+                var house = houseService.get(teacher.getHouse().getId());
+                updatedTeacher.setHouse(house);
             }
             if(teacher.getFirstName() != null) {
                 updatedTeacher.setFirstName(teacher.getFirstName());
@@ -62,14 +61,14 @@ public class TeacherService {
             }
             updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
 
-            return this.teacherRepository.save(updatedTeacher);
+            return teacherRepository.save(updatedTeacher);
         }
         return null;
     }
 
     public void delete(Long id) {
         if(id != null){
-            this.teacherRepository.deleteById(id);
+            teacherRepository.deleteById(id);
         }
     }
 }

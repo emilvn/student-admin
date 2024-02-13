@@ -2,8 +2,9 @@ package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.model.Teacher;
-import edu.hogwarts.studentadmin.repository.StudentRepository;
-import edu.hogwarts.studentadmin.repository.TeacherRepository;
+import edu.hogwarts.studentadmin.service.CourseService;
+import edu.hogwarts.studentadmin.service.StudentService;
+import edu.hogwarts.studentadmin.service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +15,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import edu.hogwarts.studentadmin.model.Course;
-import edu.hogwarts.studentadmin.repository.CourseRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,13 +33,13 @@ class CourseControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CourseRepository courseRepository;
+    private CourseService courseService;
 
     @MockBean
-    private StudentRepository studentRepository;
+    private StudentService studentService;
 
     @MockBean
-    private TeacherRepository teacherRepository;
+    private TeacherService teacherService;
 
     @BeforeEach
     void setUp() {
@@ -46,6 +47,9 @@ class CourseControllerTest {
         Course course = new Course();
         course.setId(1L);
         Course courseWithNoTeacher = new Course();
+        Course updatedCourse = new Course();
+        updatedCourse.setId(1L);
+        updatedCourse.setSubject("New Subject");
         courseWithNoTeacher.setId(3L);
         Teacher teacher = new Teacher();
         teacher.setId(1L);
@@ -54,16 +58,29 @@ class CourseControllerTest {
         course.setTeacher(teacher);
         course.getStudents().add(student);
 
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-        when(courseRepository.findById(2L)).thenReturn(Optional.empty());
-        when(courseRepository.findById(3L)).thenReturn(Optional.of(courseWithNoTeacher));
-        when(courseRepository.findAll()).thenReturn(List.of(course, courseWithNoTeacher));
+        when(courseService.get(1L)).thenReturn(course);
+        when(courseService.get(2L)).thenReturn(null);
+        when(courseService.get(3L)).thenReturn(courseWithNoTeacher);
+        when(courseService.getAll()).thenReturn(List.of(course, courseWithNoTeacher));
 
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherRepository.findById(2L)).thenReturn(Optional.empty());
+        when(courseService.update(eq(1L), any(Course.class))).thenReturn(updatedCourse);
+        when(courseService.update(eq(2L), any(Course.class))).thenReturn(null);
+        when(courseService.update(eq(3L), any(Course.class))).thenReturn(null);
 
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-        when(studentRepository.findById(2L)).thenReturn(Optional.empty());
+        when(courseService.create(course)).thenReturn(course);
+        when(courseService.create(courseWithNoTeacher)).thenReturn(courseWithNoTeacher);
+
+        when(teacherService.get(1L)).thenReturn(teacher);
+        when(teacherService.get(2L)).thenReturn(null);
+
+        when(studentService.get(1L)).thenReturn(student);
+        when(studentService.get(2L)).thenReturn(null);
+
+        when(teacherService.get(1L)).thenReturn(teacher);
+        when(teacherService.get(2L)).thenReturn(null);
+
+        when(studentService.get(1L)).thenReturn(student);
+        when(studentService.get(2L)).thenReturn(null);
     }
 
     @Test
@@ -149,9 +166,9 @@ class CourseControllerTest {
         // Test valid course with valid teacher
         mockMvc.perform(MockMvcRequestBuilders.put("/courses/1")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"subject\":\"New Subject\",\"schoolYear\":2023,\"current\":true,\"teacher\":{\"id\": 1},\"students\":[]}"))
+                        .content("{\"id\":1, \"subject\":\"New Subject\"}"))
                 .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\":1,\"subject\":\"New Subject\",\"schoolYear\":2023,\"current\":true,\"teacher\":{\"id\":1},\"students\":[]}"));
+                .andExpect(content().json("{\"id\":1,\"subject\":\"New Subject\",\"schoolYear\":0,\"current\":false,\"teacher\":null,\"students\":[]}"));
 
         // Test non-existing teacher id
         mockMvc.perform(MockMvcRequestBuilders.put("/courses/2")
@@ -164,12 +181,6 @@ class CourseControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"subject\":\"New Subject\",\"schoolYear\":2023,\"current\":true,\"teacher\":{\"id\": 1},\"students\":[]}"))
                 .andExpect(status().isNotFound());
-
-        // Test empty request
-        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{}"))
-                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -228,6 +239,6 @@ class CourseControllerTest {
 
         // Test non-existing student id
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1/students/2"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isBadRequest());
     }
 }
