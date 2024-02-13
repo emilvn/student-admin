@@ -1,7 +1,6 @@
 package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Student;
-import edu.hogwarts.studentadmin.repository.StudentRepository;
 import edu.hogwarts.studentadmin.service.HouseService;
 import edu.hogwarts.studentadmin.service.StudentService;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +23,10 @@ public class StudentController {
     @GetMapping
     public ResponseEntity<List<Student>> getAll() {
         var students = studentService.getAll();
-        if (!students.isEmpty()) {
-            return ResponseEntity.ok(students);
+        if (students.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(students);
     }
 
     @GetMapping("/{id}")

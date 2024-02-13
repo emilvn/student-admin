@@ -1,9 +1,7 @@
 package edu.hogwarts.studentadmin.service;
 
-import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.HouseRepository;
-import edu.hogwarts.studentadmin.repository.StudentRepository;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
 
