@@ -72,13 +72,9 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Course course) {
-        if (invalidTeacher(course.getTeacher())) {
-            return ResponseEntity.badRequest().body("Invalid teacher.");
+        if(validateCourse(course) != null){
+            return validateCourse(course);
         }
-        if (invalidStudents(course.getStudents())) {
-            return ResponseEntity.badRequest().body("Invalid students.");
-        }
-
         var newCourse = courseRepository.save(course);
         return ResponseEntity.ok(newCourse);
     }
@@ -90,11 +86,8 @@ public class CourseController {
         if (courseToUpdate.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        if (invalidTeacher(course.getTeacher())) {
-            return ResponseEntity.badRequest().body("Invalid teacher.");
-        }
-        if (invalidStudents(course.getStudents())) {
-            return ResponseEntity.badRequest().body("Invalid students.");
+        if(validateCourse(course) != null){
+            return validateCourse(course);
         }
 
         var updatedCourse = courseToUpdate.get();
@@ -188,10 +181,26 @@ public class CourseController {
         return get(courseId);
     }
 
-    private boolean invalidTeacher(Teacher teacher) {
-        if(teacher == null) {
-            return true;
+    private ResponseEntity<Object> validateCourse(Course course) {
+        if(course.getSubject() == null) {
+            return ResponseEntity.badRequest().body("Subject is required.");
         }
+        if (invalidTeacher(course.getTeacher())) {
+            return ResponseEntity.badRequest().body("Invalid teacher.");
+        }
+        if (invalidStudents(course.getStudents())) {
+            return ResponseEntity.badRequest().body("Invalid students.");
+        }
+        return null;
+    }
+
+    private boolean invalidTeacher(Teacher teacher) {
+        // null teacher is valid
+        if(teacher == null) {
+            return false;
+        }
+
+        // teacher without id is invalid
         if (teacher.getId() == null) {
             return true;
         }
@@ -199,9 +208,12 @@ public class CourseController {
     }
 
     private boolean invalidStudents(List<Student> students) {
+        // null students is invalid
         if(students == null) {
             return true;
         }
+
+        // empty students is valid
         if (students.isEmpty()) {
             return false;
         }

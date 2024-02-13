@@ -143,7 +143,7 @@ class CourseControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.post("/courses")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"subject\":\"Subject\",\"schoolYear\":2022,\"current\":true,\"teacher\":null,\"students\":[]}"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
 
 
         // Test non-existing teacher id

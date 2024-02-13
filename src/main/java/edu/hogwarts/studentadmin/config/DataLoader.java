@@ -1,4 +1,4 @@
-package edu.hogwarts.studentadmin;
+package edu.hogwarts.studentadmin.config;
 
 import edu.hogwarts.studentadmin.model.EmpType;
 import edu.hogwarts.studentadmin.model.House;
