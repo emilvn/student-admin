@@ -6,7 +6,6 @@ import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.CourseRepository;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,7 +31,7 @@ public class CourseController {
         if (!courses.isEmpty()) {
             return ResponseEntity.ok(courses);
         }
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
@@ -65,7 +64,7 @@ public class CourseController {
             if (!students.isEmpty()) {
                 return ResponseEntity.ok(students);
             }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+            return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
@@ -75,7 +74,13 @@ public class CourseController {
         if(validateCourse(course) != null){
             return validateCourse(course);
         }
+        var teacher = teacherRepository.findById(course.getTeacher().getId());
+        teacher.ifPresent(course::setTeacher);
+
+        var students = course.getStudents().stream().map(student -> studentRepository.findById(student.getId())).toList();
+        students.forEach(student -> student.ifPresent(course.getStudents()::add));
         var newCourse = courseRepository.save(course);
+
         return ResponseEntity.ok(newCourse);
     }
 
