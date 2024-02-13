@@ -51,9 +51,6 @@ public class StudentService {
             if(student.getDateOfBirth() != null) {
                 updatedStudent.setDateOfBirth(student.getDateOfBirth());
             }
-            if(student.isPrefect() != updatedStudent.isPrefect()) {
-                updatedStudent.setPrefect(student.isPrefect());
-            }
             if(student.getEnrollmentYear() != 0) {
                 updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
             }
@@ -61,6 +58,7 @@ public class StudentService {
                 updatedStudent.setGraduationYear(student.getGraduationYear());
             }
             updatedStudent.setGraduated(student.isGraduated());
+            updatedStudent.setPrefect(student.isPrefect());
 
             return this.studentRepository.save(updatedStudent);
         }

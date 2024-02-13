@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -35,8 +33,10 @@ public class StudentServiceTest {
     void updateStudentTest() {
         var house = new House();
         house.setId(2L);
-        var student = new Student(1L, "Harold", "Frank", "Longbottom", LocalDate.of(1980, 7, 30), house, false, 1991, 1998, true);
+        var student = new Student();
+        student.setId(1L);
         student.setFirstName("Harold");
+        student.setHouse(house);
         var updatedStudent = studentService.update(student, 1L);
 
         assertEquals("Harold", updatedStudent.getFirstName());
