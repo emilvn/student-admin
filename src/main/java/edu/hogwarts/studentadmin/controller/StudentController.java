@@ -2,6 +2,8 @@ package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
+import edu.hogwarts.studentadmin.service.HouseService;
+import edu.hogwarts.studentadmin.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,15 +13,17 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentController {
 
-    private final StudentRepository studentRepository;
+    private final StudentService studentService;
+    private final HouseService houseService;
 
-    public StudentController(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
+    public StudentController(StudentService studentService, HouseService houseService) {
+        this.studentService = studentService;
+        this.houseService = houseService;
     }
 
     @GetMapping
     public ResponseEntity<List<Student>> getAll() {
-        var students = this.studentRepository.findAll();
+        var students = studentService.getAll();
         if (!students.isEmpty()) {
             return ResponseEntity.ok(students);
         }
@@ -28,48 +32,55 @@ public class StudentController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Student> get(@PathVariable Long id) {
-        var student = this.studentRepository.findById(id);
-        if (student.isPresent()) {
-            return ResponseEntity.ok(student.get());
+        var student = studentService.get(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(student);
     }
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Student student) {
-        if(student.getFirstName() == null) {
-            return ResponseEntity.badRequest().body("First name is required.");
+        if(validateStudent(student) != null) {
+            return validateStudent(student);
         }
-        return ResponseEntity.ok(studentRepository.save(student));
+        return ResponseEntity.ok(studentService.create(student));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> update(@RequestBody Student student, @PathVariable("id") Long id) {
-        var studentToUpdate = studentRepository.findById(id);
-        if (studentToUpdate.isPresent()) {
-            var updatedStudent = studentToUpdate.get();
-            updatedStudent.setFirstName(student.getFirstName());
-            updatedStudent.setMiddleName(student.getMiddleName());
-            updatedStudent.setLastName(student.getLastName());
-            updatedStudent.setDateOfBirth(student.getDateOfBirth());
-            updatedStudent.setPrefect(student.isPrefect());
-            updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
-            updatedStudent.setGraduationYear(student.getGraduationYear());
-            updatedStudent.setGraduated(student.isGraduated());
-            updatedStudent.setHouse(student.getHouse());
-            studentRepository.save(updatedStudent);
-            return get(id);
+    public ResponseEntity<Object> update(@RequestBody Student student, @PathVariable("id") Long id) {
+        if(validateStudent(student) != null) {
+            return validateStudent(student);
         }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(studentService.update(student, id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> delete(@PathVariable("id") Long id) {
-        var studentToDelete = this.studentRepository.findById(id);
-        if (studentToDelete.isPresent()) {
-            this.studentRepository.delete(studentToDelete.get());
-            return ResponseEntity.ok(studentToDelete.get());
+        var student = studentService.get(id);
+        if (student == null) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.notFound().build();
+        studentService.delete(id);
+        return ResponseEntity.ok(student);
+    }
+
+    private ResponseEntity<Object> validateStudent(Student student) {
+        if(student == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if(student.getFirstName() == null) {
+            return ResponseEntity.badRequest().body("First name is required.");
+        }
+        if(student.getHouse() == null) {
+            return ResponseEntity.badRequest().body("House is required.");
+        }
+        if(student.getHouse().getId() == null) {
+            return ResponseEntity.badRequest().body("House ID is required.");
+        }
+        if(houseService.get(student.getHouse().getId()) == null) {
+            return ResponseEntity.badRequest().body("House with given ID doesnt exist.");
+        }
+        return null;
     }
 }

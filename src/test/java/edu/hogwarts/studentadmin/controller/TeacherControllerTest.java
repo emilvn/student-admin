@@ -1,4 +1,4 @@
-package edu.hogwarts.studentadmin;
+package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
