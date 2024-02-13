@@ -18,31 +18,44 @@ public class TeacherServiceTest {
 
     @Test
     void createTeacherTest() {
-        var house = new House();
-        house.setId(1L);
-        var teacher = new Teacher();
-        teacher.setFirstName("Test");
-        teacher.setHouse(house);
-        var addedStudent = teacherService.create(teacher);
+        House house = createHouse(1L, "Gryffindor");
+        Teacher teacher = createTeacher("Test", house);
+        Teacher addedTeacher = teacherService.create(teacher);
 
-        assertEquals("Test", addedStudent.getFirstName());
-        assertEquals("Gryffindor", addedStudent.getHouse().getName());
+        assertEquals("Test", addedTeacher.getFirstName());
+        assertEquals("Gryffindor", addedTeacher.getHouse().getName());
     }
 
     @Test
     void updateTeacherTest() {
-        var house = new House();
-        house.setId(2L);
-        var teacher = new Teacher();
-        teacher.setId(1L);
-        teacher.setFirstName("Harold");
-        teacher.setHouse(house);
-        var updatedTeacher = teacherService.update(teacher, 1L);
+        House house = createHouse(2L, "Hufflepuff");
+        Teacher teacher = createTeacher(1L, "Harold", house);
+        Teacher updatedTeacher = teacherService.update(teacher, 1L);
 
         assertEquals("Harold", updatedTeacher.getFirstName());
         assertEquals("Hufflepuff", updatedTeacher.getHouse().getName());
 
         updatedTeacher = teacherService.update(teacher, -2L);
         assertNull(updatedTeacher);
+    }
+
+    private House createHouse(Long id, String name) {
+        House house = new House();
+        house.setId(id);
+        house.setName(name);
+        return house;
+    }
+
+    private Teacher createTeacher(String firstName, House house) {
+        Teacher teacher = new Teacher();
+        teacher.setFirstName(firstName);
+        teacher.setHouse(house);
+        return teacher;
+    }
+
+    private Teacher createTeacher(Long id, String firstName, House house) {
+        Teacher teacher = createTeacher(firstName, house);
+        teacher.setId(id);
+        return teacher;
     }
 }

@@ -31,10 +31,7 @@ public class StudentControllerTest {
 
     @BeforeEach
     void setUp() {
-        // add mock student
-        Student student = new Student();
-        student.setId(1L);
-
+        Student student = createStudent(1L);
         when(studentService.getAll()).thenReturn(List.of(student));
         when(studentService.get(1L)).thenReturn(student);
         when(studentService.get(2L)).thenReturn(null);
@@ -45,7 +42,6 @@ public class StudentControllerTest {
 
     @Test
     void getAllStudentsTest() throws Exception {
-        // Test with student
         mockMvc.perform(MockMvcRequestBuilders.get("/students"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
@@ -53,53 +49,51 @@ public class StudentControllerTest {
 
     @Test
     void getStudentTest() throws Exception {
-        // Test with valid student id
         mockMvc.perform(MockMvcRequestBuilders.get("/students/1"))
                 .andExpect(status().isOk());
 
-        // Test with invalid student id
         mockMvc.perform(MockMvcRequestBuilders.get("/students/2"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void createStudentTest() throws Exception {
-        // Test with valid student
         mockMvc.perform(MockMvcRequestBuilders.post("/students")
-                .contentType("application/json")
-                .content("{\"firstName\": \"Emil\", \"middleName\": \"V\", \"lastName\": \"Nielsen\", \"dateOfBirth\": \"1935-10-04\", \"house\": {\"id\": 1}, \"prefect\": true, \"enrollmentYear\": 1950, \"graduationYear\": 1957, \"graduated\": true}"))
+                        .contentType("application/json")
+                        .content("{\"firstName\": \"Emil\", \"middleName\": \"V\", \"lastName\": \"Nielsen\", \"dateOfBirth\": \"1935-10-04\", \"house\": {\"id\": 1}, \"prefect\": true, \"enrollmentYear\": 1950, \"graduationYear\": 1957, \"graduated\": true}"))
                 .andExpect(status().isOk());
 
-        // Test with invalid student
         mockMvc.perform(MockMvcRequestBuilders.post("/students")
-                .contentType("application/json")
-                .content("{\"id\":null}"))
+                        .contentType("application/json")
+                        .content("{\"id\":null}"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     void updateStudentTest() throws Exception {
-        // Test with valid student id
         mockMvc.perform(MockMvcRequestBuilders.put("/students/1")
-                .contentType("application/json")
-                .content("{\"id\":1, \"firstName\": \"Test\"}"))
+                        .contentType("application/json")
+                        .content("{\"id\":1, \"firstName\": \"Test\"}"))
                 .andExpect(status().isOk());
 
-        // Test with invalid student id
         mockMvc.perform(MockMvcRequestBuilders.put("/students/2")
-                .contentType("application/json")
-                .content("{\"id\":2}"))
+                        .contentType("application/json")
+                        .content("{\"id\":2}"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void deleteStudentTest() throws Exception {
-        // Test with valid student id
         mockMvc.perform(MockMvcRequestBuilders.delete("/students/1"))
                 .andExpect(status().isOk());
 
-        // Test with invalid student id
         mockMvc.perform(MockMvcRequestBuilders.delete("/students/2"))
                 .andExpect(status().isNotFound());
+    }
+
+    private Student createStudent(Long id) {
+        Student student = new Student();
+        student.setId(id);
+        return student;
     }
 }

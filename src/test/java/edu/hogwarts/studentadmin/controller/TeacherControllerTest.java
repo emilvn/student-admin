@@ -30,10 +30,7 @@ public class TeacherControllerTest {
 
     @BeforeEach
     void setUp() {
-        // add mock teacher
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-
+        Teacher teacher = createTeacher(1L);
         when(teacherService.getAll()).thenReturn(List.of(teacher));
         when(teacherService.get(1L)).thenReturn(teacher);
         when(teacherService.get(2L)).thenReturn(null);
@@ -44,7 +41,6 @@ public class TeacherControllerTest {
 
     @Test
     void getAllTeachersTest() throws Exception {
-        // Test with teacher
         mockMvc.perform(MockMvcRequestBuilders.get("/teachers"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json"));
@@ -52,40 +48,33 @@ public class TeacherControllerTest {
 
     @Test
     void getTeacherTest() throws Exception {
-        // Test with valid teacher id
         mockMvc.perform(MockMvcRequestBuilders.get("/teachers/1"))
                 .andExpect(status().isOk());
 
-        // Test with invalid teacher id
         mockMvc.perform(MockMvcRequestBuilders.get("/teachers/2"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void createTeacherTest() throws Exception {
-        // Test with valid teacher
         mockMvc.perform(MockMvcRequestBuilders.post("/teachers")
                         .contentType("application/json")
                         .content("{\"firstName\": \"Emil\", \"middleName\": \"V\", \"lastName\": \"Nielsen\", \"dateOfBirth\": \"1935-10-04\", \"house\": {\"id\": 1}, \"headOfHouse\": true, \"employment\": \"TENURED\", \"employmentStart\": \"1970-09-01\", \"employmentEnd\": null}"))
                 .andExpect(status().isOk());
 
-        // Test with invalid teacher
         mockMvc.perform(MockMvcRequestBuilders.post("/teachers")
                         .contentType("application/json")
                         .content("{}"))
                 .andExpect(status().isBadRequest());
-
     }
 
     @Test
     void updateTeacherTest() throws Exception {
-        // Test with valid teacher id
         mockMvc.perform(MockMvcRequestBuilders.put("/teachers/1")
                         .contentType("application/json")
                         .content("{\"id\":1}"))
                 .andExpect(status().isOk());
 
-        // Test with invalid teacher id
         mockMvc.perform(MockMvcRequestBuilders.put("/teachers/2")
                         .contentType("application/json")
                         .content("{\"id\":2}"))
@@ -94,12 +83,16 @@ public class TeacherControllerTest {
 
     @Test
     void deleteTeacherTest() throws Exception {
-        // Test with valid teacher id
         mockMvc.perform(MockMvcRequestBuilders.delete("/teachers/1"))
                 .andExpect(status().isOk());
 
-        // Test with invalid teacher id
         mockMvc.perform(MockMvcRequestBuilders.delete("/teachers/2"))
                 .andExpect(status().isNotFound());
+    }
+
+    private Teacher createTeacher(Long id) {
+        Teacher teacher = new Teacher();
+        teacher.setId(id);
+        return teacher;
     }
 }

@@ -18,12 +18,9 @@ public class StudentServiceTest {
 
     @Test
     void createStudentTest() {
-        var house = new House();
-        house.setId(1L);
-        var student = new Student();
-        student.setFirstName("Test");
-        student.setHouse(house);
-        var addedStudent = studentService.create(student);
+        House house = createHouse(1L, "Gryffindor");
+        Student student = createStudent("Test", house);
+        Student addedStudent = studentService.create(student);
 
         assertEquals("Test", addedStudent.getFirstName());
         assertEquals("Gryffindor", addedStudent.getHouse().getName());
@@ -31,18 +28,34 @@ public class StudentServiceTest {
 
     @Test
     void updateStudentTest() {
-        var house = new House();
-        house.setId(2L);
-        var student = new Student();
-        student.setId(1L);
-        student.setFirstName("Harold");
-        student.setHouse(house);
-        var updatedStudent = studentService.update(student, 1L);
+        House house = createHouse(2L, "Hufflepuff");
+        Student student = createStudent(1L, "Harold", house);
+        Student updatedStudent = studentService.update(student, 1L);
 
         assertEquals("Harold", updatedStudent.getFirstName());
         assertEquals("Hufflepuff", updatedStudent.getHouse().getName());
 
         updatedStudent = studentService.update(student, -2L);
         assertNull(updatedStudent);
+    }
+
+    private House createHouse(Long id, String name) {
+        House house = new House();
+        house.setId(id);
+        house.setName(name);
+        return house;
+    }
+
+    private Student createStudent(String firstName, House house) {
+        Student student = new Student();
+        student.setFirstName(firstName);
+        student.setHouse(house);
+        return student;
+    }
+
+    private Student createStudent(Long id, String firstName, House house) {
+        Student student = createStudent(firstName, house);
+        student.setId(id);
+        return student;
     }
 }
