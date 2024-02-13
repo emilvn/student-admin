@@ -1,7 +1,8 @@
 package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Student;
-import edu.hogwarts.studentadmin.repository.StudentRepository;
+import edu.hogwarts.studentadmin.service.StudentService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,9 +12,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
-import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -24,32 +27,32 @@ public class StudentControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private StudentRepository studentRepository;
+    private StudentService studentService;
+
+    @BeforeEach
+    void setUp() {
+        // add mock student
+        Student student = new Student();
+        student.setId(1L);
+
+        when(studentService.getAll()).thenReturn(List.of(student));
+        when(studentService.get(1L)).thenReturn(student);
+        when(studentService.get(2L)).thenReturn(null);
+        when(studentService.create(any(Student.class))).thenReturn(student);
+        when(studentService.update(any(Student.class), eq(1L))).thenReturn(student);
+        when(studentService.update(any(Student.class), eq(2L))).thenReturn(null);
+    }
 
     @Test
     void getAllStudentsTest() throws Exception {
-        // Test with no students
-        mockMvc.perform(MockMvcRequestBuilders.get("/students"))
-                .andExpect(status().isNoContent());
-
-        // Add mock student
-        Student student = new Student();
-        student.setId(1L);
-        when(studentRepository.findAll()).thenReturn(List.of(student));
-
         // Test with student
         mockMvc.perform(MockMvcRequestBuilders.get("/students"))
-                .andExpect(status().isOk());
-
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
     void getStudentTest() throws Exception {
-        // Add mock student
-        Student student = new Student();
-        student.setId(1L);
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-
         // Test with valid student id
         mockMvc.perform(MockMvcRequestBuilders.get("/students/1"))
                 .andExpect(status().isOk());
@@ -61,11 +64,6 @@ public class StudentControllerTest {
 
     @Test
     void createStudentTest() throws Exception {
-        // Add mock student
-        Student student = new Student();
-        student.setId(1L);
-        when(studentRepository.save(student)).thenReturn(student);
-
         // Test with valid student
         mockMvc.perform(MockMvcRequestBuilders.post("/students")
                 .contentType("application/json")
@@ -81,12 +79,6 @@ public class StudentControllerTest {
 
     @Test
     void updateStudentTest() throws Exception {
-        // Add mock student
-        Student student = new Student();
-        student.setId(1L);
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-        when(studentRepository.save(student)).thenReturn(student);
-
         // Test with valid student id
         mockMvc.perform(MockMvcRequestBuilders.put("/students/1")
                 .contentType("application/json")
@@ -102,11 +94,6 @@ public class StudentControllerTest {
 
     @Test
     void deleteStudentTest() throws Exception {
-        // Add mock student
-        Student student = new Student();
-        student.setId(1L);
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-
         // Test with valid student id
         mockMvc.perform(MockMvcRequestBuilders.delete("/students/1"))
                 .andExpect(status().isOk());

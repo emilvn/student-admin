@@ -81,13 +81,15 @@ class CourseControllerTest {
 
         when(studentService.get(1L)).thenReturn(student);
         when(studentService.get(2L)).thenReturn(null);
+        when(studentService.get(3L)).thenReturn(student);
     }
 
     @Test
     void getAllCoursesTest() throws Exception {
         // Test valid course list
         mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
@@ -201,8 +203,13 @@ class CourseControllerTest {
     @Test
     void addStudentTest() throws Exception {
         // Test valid course with valid student
-        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students/1"))
+        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students/3"))
                 .andExpect(status().isOk());
+
+        // Test valid course with already enrolled student
+        mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students/1"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Student already enrolled in course."));
 
         // Test valid course with non-existing student id
         mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students/2"))

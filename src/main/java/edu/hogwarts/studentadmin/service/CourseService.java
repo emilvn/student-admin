@@ -4,6 +4,7 @@ import edu.hogwarts.studentadmin.model.Course;
 import edu.hogwarts.studentadmin.repository.CourseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,7 +60,7 @@ public class CourseService {
                     .stream()
                     .map(student -> studentService.get(student.getId()))
                     .toList();
-            courseToUpdate.setStudents(students);
+            courseToUpdate.setStudents(new ArrayList<>(students));
         }
         if(course.getSchoolYear() != 0){
             courseToUpdate.setSchoolYear(course.getSchoolYear());

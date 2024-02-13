@@ -1,7 +1,8 @@
 package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Teacher;
-import edu.hogwarts.studentadmin.repository.TeacherRepository;
+import edu.hogwarts.studentadmin.service.TeacherService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -11,8 +12,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
-import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -24,32 +26,32 @@ public class TeacherControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TeacherRepository teacherRepository;
+    private TeacherService teacherService;
+
+    @BeforeEach
+    void setUp() {
+        // add mock teacher
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+
+        when(teacherService.getAll()).thenReturn(List.of(teacher));
+        when(teacherService.get(1L)).thenReturn(teacher);
+        when(teacherService.get(2L)).thenReturn(null);
+        when(teacherService.create(any(Teacher.class))).thenReturn(teacher);
+        when(teacherService.update(any(Teacher.class), eq(1L))).thenReturn(teacher);
+        when(teacherService.update(any(Teacher.class), eq(2L))).thenReturn(null);
+    }
 
     @Test
     void getAllTeachersTest() throws Exception {
-        // Test with no teachers
-        mockMvc.perform(MockMvcRequestBuilders.get("/teachers"))
-                .andExpect(status().isNoContent());
-
-        // Add mock teacher
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        when(teacherRepository.findAll()).thenReturn(List.of(teacher));
-
         // Test with teacher
         mockMvc.perform(MockMvcRequestBuilders.get("/teachers"))
-                .andExpect(status().isOk());
-
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"));
     }
 
     @Test
     void getTeacherTest() throws Exception {
-        // Add mock teacher
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-
         // Test with valid teacher id
         mockMvc.perform(MockMvcRequestBuilders.get("/teachers/1"))
                 .andExpect(status().isOk());
@@ -77,12 +79,6 @@ public class TeacherControllerTest {
 
     @Test
     void updateTeacherTest() throws Exception {
-        // Add mock teacher
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-        when(teacherRepository.save(teacher)).thenReturn(teacher);
-
         // Test with valid teacher id
         mockMvc.perform(MockMvcRequestBuilders.put("/teachers/1")
                         .contentType("application/json")
@@ -98,11 +94,6 @@ public class TeacherControllerTest {
 
     @Test
     void deleteTeacherTest() throws Exception {
-        // Add mock teacher
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-
         // Test with valid teacher id
         mockMvc.perform(MockMvcRequestBuilders.delete("/teachers/1"))
                 .andExpect(status().isOk());

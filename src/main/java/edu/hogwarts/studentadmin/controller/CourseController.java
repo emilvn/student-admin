@@ -116,6 +116,9 @@ public class CourseController {
         if(student == null){
             return ResponseEntity.badRequest().body("Invalid student id.");
         }
+        if(courseToUpdate.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))){
+            return ResponseEntity.badRequest().body("Student already enrolled in course.");
+        }
         courseToUpdate.getStudents().add(student);
         var updatedCourse = courseService.update(id, courseToUpdate);
         return ResponseEntity.ok(updatedCourse);
