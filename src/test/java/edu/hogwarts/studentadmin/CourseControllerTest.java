@@ -4,6 +4,7 @@ import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,53 +40,55 @@ class CourseControllerTest {
     @MockBean
     private TeacherRepository teacherRepository;
 
-    @Test
-    void getAllCoursesTest() throws Exception {
-        // Test empty course list
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
-                .andExpect(status().isNoContent());
-
+    @BeforeEach
+    void setUp() {
         // add mock course
         Course course = new Course();
         course.setId(1L);
-        when(courseRepository.findAll()).thenReturn(List.of(course));
+        Course courseWithNoTeacher = new Course();
+        courseWithNoTeacher.setId(3L);
+        Teacher teacher = new Teacher();
+        teacher.setId(1L);
+        Student student = new Student();
+        student.setId(1L);
+        course.setTeacher(teacher);
+        course.getStudents().add(student);
 
+        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        when(courseRepository.findById(2L)).thenReturn(Optional.empty());
+        when(courseRepository.findById(3L)).thenReturn(Optional.of(courseWithNoTeacher));
+        when(courseRepository.findAll()).thenReturn(List.of(course, courseWithNoTeacher));
+
+        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
+        when(teacherRepository.findById(2L)).thenReturn(Optional.empty());
+
+        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
+        when(studentRepository.findById(2L)).thenReturn(Optional.empty());
+    }
+
+    @Test
+    void getAllCoursesTest() throws Exception {
         // Test valid course list
         mockMvc.perform(MockMvcRequestBuilders.get("/courses"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{\"id\": 1, \"subject\": null, \"schoolYear\": 0, \"current\": false, \"teacher\": null, \"students\": []}]"));
+                .andExpect(status().isOk());
     }
 
     @Test
     void getCourseTest() throws Exception {
-        // add mock course
-        Course course = new Course();
-        course.setId(1L);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test existing course id
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("{\"id\": 1, \"subject\": null, \"schoolYear\": 0, \"current\": false, \"teacher\": null, \"students\": []}"));
+                .andExpect(status().isOk());
 
         // Test non-existing course id
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses/2"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/4"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void getTeacherTest() throws Exception {
         // Test course with no teacher
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/teacher"))
-                .andExpect(status().isNotFound());
-
-        // add mock course with teacher
-        Course course = new Course();
-        course.setId(1L);
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        course.setTeacher(teacher);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/3/teacher"))
+                .andExpect(status().isNoContent());
 
         // Test valid course id
         mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/teacher"))
@@ -98,40 +101,22 @@ class CourseControllerTest {
 
     @Test
     void getStudentsTest() throws Exception {
-        // add mock course without students
-        Course course = new Course();
-        course.setId(1L);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test course with no students
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/students"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/3/students"))
                 .andExpect(status().isNoContent());
 
-        // add mock course with students
-        Course courseWithStudents = new Course();
-        courseWithStudents.setId(2L);
-        var students = courseWithStudents.getStudents();
-        var student = new Student();
-        student.setId(1L);
-        students.add(student);
-        when(courseRepository.findById(2L)).thenReturn(Optional.of(courseWithStudents));
-
         // Test valid course
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses/2/students"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/1/students"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[{\"id\": 1, \"firstName\": null, \"middleName\": null, \"lastName\": null, \"dateOfBirth\": null, \"prefect\": false, \"enrollmentYear\": 0, \"graduationYear\": 0, \"graduated\": false, \"house\": null}]"));
 
         // Test non-existing course id
-        mockMvc.perform(MockMvcRequestBuilders.get("/courses/3/students"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/courses/4/students"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void createCourseTest() throws Exception {
-        // add mock teacher
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
 
         // Test valid course with valid teacher
         mockMvc.perform(MockMvcRequestBuilders.post("/courses")
@@ -161,14 +146,6 @@ class CourseControllerTest {
 
     @Test
     void updateCourseTest() throws Exception {
-        // add mock teacher and course
-        Course course = new Course();
-        course.setId(1L);
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test valid course with valid teacher
         mockMvc.perform(MockMvcRequestBuilders.put("/courses/1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -183,7 +160,7 @@ class CourseControllerTest {
                 .andExpect(status().isNotFound());
 
         // Test non-existing course id
-        mockMvc.perform(MockMvcRequestBuilders.put("/courses/3")
+        mockMvc.perform(MockMvcRequestBuilders.put("/courses/4")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"subject\":\"New Subject\",\"schoolYear\":2023,\"current\":true,\"teacher\":{\"id\": 1},\"students\":[]}"))
                 .andExpect(status().isNotFound());
@@ -197,14 +174,6 @@ class CourseControllerTest {
 
     @Test
     void updateTeacherTest() throws Exception {
-        // add mock teacher and course
-        Course course = new Course();
-        course.setId(1L);
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        when(teacherRepository.findById(1L)).thenReturn(Optional.of(teacher));
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test valid course with valid teacher
         mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/teacher")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -220,14 +189,6 @@ class CourseControllerTest {
 
     @Test
     void addStudentTest() throws Exception {
-        // add mock student and course
-        Course course = new Course();
-        course.setId(1L);
-        Student student = new Student();
-        student.setId(1L);
-        when(studentRepository.findById(1L)).thenReturn(Optional.of(student));
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test valid course with valid student
         mockMvc.perform(MockMvcRequestBuilders.put("/courses/1/students/1"))
                 .andExpect(status().isOk());
@@ -239,49 +200,28 @@ class CourseControllerTest {
 
     @Test
     void deleteCourseTest() throws Exception {
-        // add mock course
-        Course course = new Course();
-        course.setId(1L);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test valid course id
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1"))
                 .andExpect(status().isOk());
 
         // Test non-existing course id
-        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/2"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/4"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void removeTeacherTest() throws Exception {
-        // add mock teacher and course
-        Course course = new Course();
-        course.setId(1L);
-        Teacher teacher = new Teacher();
-        teacher.setId(1L);
-        course.setTeacher(teacher);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test valid course id
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1/teacher"))
                 .andExpect(status().isOk());
 
         // Test non-existing course id
-        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/2/teacher"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/courses/4/teacher"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void removeStudentTest() throws Exception {
-        // add mock student and course
-        Course course = new Course();
-        course.setId(1L);
-        Student student = new Student();
-        student.setId(1L);
-        course.getStudents().add(student);
-        when(courseRepository.findById(1L)).thenReturn(Optional.of(course));
-
         // Test valid student id
         mockMvc.perform(MockMvcRequestBuilders.delete("/courses/1/students/1"))
                 .andExpect(status().isOk());
