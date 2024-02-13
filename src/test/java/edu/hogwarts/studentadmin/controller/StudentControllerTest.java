@@ -90,7 +90,7 @@ public class StudentControllerTest {
         // Test with valid student id
         mockMvc.perform(MockMvcRequestBuilders.put("/students/1")
                 .contentType("application/json")
-                .content("{\"id\":1}"))
+                .content("{\"id\":1, \"firstName\": \"Test\"}"))
                 .andExpect(status().isOk());
 
         // Test with invalid student id

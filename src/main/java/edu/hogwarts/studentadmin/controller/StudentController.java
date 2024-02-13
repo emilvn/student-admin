@@ -49,10 +49,11 @@ public class StudentController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@RequestBody Student student, @PathVariable("id") Long id) {
-        if(validateStudent(student) != null) {
-            return validateStudent(student);
+        var updatedStudent = studentService.update(student, id);
+        if(updatedStudent == null) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(studentService.update(student, id));
+        return ResponseEntity.ok(updatedStudent);
     }
 
     @DeleteMapping("/{id}")

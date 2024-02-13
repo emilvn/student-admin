@@ -74,8 +74,10 @@ public class CourseController {
         if(validateCourse(course) != null){
             return validateCourse(course);
         }
-        var teacher = teacherRepository.findById(course.getTeacher().getId());
-        teacher.ifPresent(course::setTeacher);
+        if(course.getTeacher() != null) {
+            var teacher = teacherRepository.findById(course.getTeacher().getId());
+            teacher.ifPresent(course::setTeacher);
+        }
 
         var students = course.getStudents().stream().map(student -> studentRepository.findById(student.getId())).toList();
         students.forEach(student -> student.ifPresent(course.getStudents()::add));
