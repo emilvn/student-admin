@@ -46,7 +46,7 @@ public class CourseController {
     @GetMapping("/{id}/teacher")
     public ResponseEntity<Teacher> getTeacher(@PathVariable("id") Long id) {
         var course = courseService.get(id);
-        if(course == null) {
+        if (course == null) {
             return ResponseEntity.notFound().build();
         }
         var teacher = course.getTeacher();
@@ -59,7 +59,7 @@ public class CourseController {
     @GetMapping("/{id}/students")
     public ResponseEntity<List<Student>> getStudents(@PathVariable("id") Long id) {
         var course = courseService.get(id);
-        if(course == null) {
+        if (course == null) {
             return ResponseEntity.notFound().build();
         }
         var students = course.getStudents();
@@ -71,11 +71,11 @@ public class CourseController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Course course) {
-        if(course.getSubject() == null){
+        if (course.getSubject() == null) {
             return ResponseEntity.badRequest().body("Subject is required.");
         }
-        if(course.getTeacher()!=null){
-            if(teacherService.get(course.getTeacher().getId()) == null){
+        if (course.getTeacher() != null) {
+            if (teacherService.get(course.getTeacher().getId()) == null) {
                 return ResponseEntity.badRequest().body("Invalid teacher id.");
             }
         }
@@ -107,16 +107,16 @@ public class CourseController {
     }
 
     @PutMapping("/{id}/students/{studentId}")
-    public ResponseEntity<Object> addStudent(@PathVariable("id") Long id, @PathVariable("studentId") Long studentId){
+    public ResponseEntity<Object> addStudent(@PathVariable("id") Long id, @PathVariable("studentId") Long studentId) {
         var courseToUpdate = courseService.get(id);
         var student = studentService.get(studentId);
-        if(courseToUpdate == null){
+        if (courseToUpdate == null) {
             return ResponseEntity.notFound().build();
         }
-        if(student == null){
+        if (student == null) {
             return ResponseEntity.badRequest().body("Invalid student id.");
         }
-        if(courseToUpdate.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))){
+        if (courseToUpdate.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))) {
             return ResponseEntity.badRequest().body("Student already enrolled in course.");
         }
         courseToUpdate.getStudents().add(student);
@@ -137,7 +137,7 @@ public class CourseController {
     @DeleteMapping("/{id}/teacher")
     public ResponseEntity<Object> removeTeacher(@PathVariable("id") Long id) {
         var course = courseService.get(id);
-        if(course == null){
+        if (course == null) {
             return ResponseEntity.notFound().build();
         }
         var teacher = course.getTeacher();
@@ -148,11 +148,11 @@ public class CourseController {
     @DeleteMapping("/{courseId}/students/{studentId}")
     public ResponseEntity<Object> removeStudent(@PathVariable("courseId") Long courseId, @PathVariable("studentId") Long studentId) {
         var course = courseService.get(courseId);
-        if(course == null) {
+        if (course == null) {
             return ResponseEntity.notFound().build();
         }
         var student = studentService.get(studentId);
-        if(student == null) {
+        if (student == null) {
             return ResponseEntity.badRequest().body("Invalid student id.");
         }
         courseService.removeStudent(courseId, studentId);

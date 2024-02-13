@@ -40,7 +40,7 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Student student) {
-        if(validateStudent(student) != null) {
+        if (validateStudent(student) != null) {
             return validateStudent(student);
         }
         return ResponseEntity.ok(studentService.create(student));
@@ -49,7 +49,7 @@ public class StudentController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@RequestBody Student student, @PathVariable("id") Long id) {
         var updatedStudent = studentService.update(student, id);
-        if(updatedStudent == null) {
+        if (updatedStudent == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedStudent);
@@ -66,19 +66,19 @@ public class StudentController {
     }
 
     private ResponseEntity<Object> validateStudent(Student student) {
-        if(student == null) {
+        if (student == null) {
             return ResponseEntity.notFound().build();
         }
-        if(student.getFirstName() == null) {
+        if (student.getFirstName() == null) {
             return ResponseEntity.badRequest().body("First name is required.");
         }
-        if(student.getHouse() == null) {
+        if (student.getHouse() == null) {
             return ResponseEntity.badRequest().body("House is required.");
         }
-        if(student.getHouse().getId() == null) {
+        if (student.getHouse().getId() == null) {
             return ResponseEntity.badRequest().body("House ID is required.");
         }
-        if(houseService.get(student.getHouse().getId()) == null) {
+        if (houseService.get(student.getHouse().getId()) == null) {
             return ResponseEntity.badRequest().body("House with given ID doesnt exist.");
         }
         return null;

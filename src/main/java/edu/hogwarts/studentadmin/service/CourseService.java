@@ -29,11 +29,11 @@ public class CourseService {
     }
 
     public Course create(Course course) {
-        if(course.getTeacher() != null) {
+        if (course.getTeacher() != null) {
             var teacher = teacherService.get(course.getTeacher().getId());
             course.setTeacher(teacher);
         }
-        if(course.getStudents() != null) {
+        if (course.getStudents() != null) {
             var students = course.getStudents()
                     .stream()
                     .map(student -> studentService.get(student.getId()))
@@ -45,24 +45,24 @@ public class CourseService {
 
     public Course update(Long id, Course course) {
         var courseToUpdate = get(id);
-        if(courseToUpdate == null) {
+        if (courseToUpdate == null) {
             return null;
         }
-        if(course.getSubject() != null) {
+        if (course.getSubject() != null) {
             courseToUpdate.setSubject(course.getSubject());
         }
-        if(course.getTeacher() != null) {
+        if (course.getTeacher() != null) {
             var teacher = teacherService.get(course.getTeacher().getId());
             courseToUpdate.setTeacher(teacher);
         }
-        if(course.getStudents() != null) {
+        if (course.getStudents() != null) {
             var students = course.getStudents()
                     .stream()
                     .map(student -> studentService.get(student.getId()))
                     .toList();
             courseToUpdate.setStudents(new ArrayList<>(students));
         }
-        if(course.getSchoolYear() != 0){
+        if (course.getSchoolYear() != 0) {
             courseToUpdate.setSchoolYear(course.getSchoolYear());
         }
         courseToUpdate.setCurrent(course.isCurrent());
@@ -75,7 +75,7 @@ public class CourseService {
 
     public void removeTeacher(Long id) {
         var course = get(id);
-        if(course == null) {
+        if (course == null) {
             return;
         }
         course.setTeacher(null);
@@ -84,12 +84,12 @@ public class CourseService {
 
     public void removeStudent(Long id, Long studentId) {
         var course = get(id);
-        if(course == null) {
+        if (course == null) {
             return;
         }
         var students = course.getStudents();
         var student = studentService.get(studentId);
-        if(!students.contains(student)) {
+        if (!students.contains(student)) {
             return;
         }
         course.getStudents().remove(student);

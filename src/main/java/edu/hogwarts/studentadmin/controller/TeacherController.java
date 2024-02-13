@@ -1,6 +1,5 @@
 package edu.hogwarts.studentadmin.controller;
 
-import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.service.HouseService;
 import edu.hogwarts.studentadmin.service.TeacherService;
@@ -40,7 +39,7 @@ public class TeacherController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Teacher teacher) {
-        if(validateTeacher(teacher) != null) {
+        if (validateTeacher(teacher) != null) {
             return validateTeacher(teacher);
         }
         return ResponseEntity.ok(teacherService.create(teacher));
@@ -49,7 +48,7 @@ public class TeacherController {
     @PutMapping("/{id}")
     public ResponseEntity<Teacher> update(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
         var updatedTeacher = teacherService.update(teacher, id);
-        if(updatedTeacher == null) {
+        if (updatedTeacher == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(updatedTeacher);
@@ -67,19 +66,19 @@ public class TeacherController {
     }
 
     private ResponseEntity<Object> validateTeacher(Teacher teacher) {
-        if(teacher == null) {
+        if (teacher == null) {
             return ResponseEntity.notFound().build();
         }
-        if(teacher.getFirstName() == null) {
+        if (teacher.getFirstName() == null) {
             return ResponseEntity.badRequest().body("First name is required.");
         }
-        if(teacher.getHouse() == null) {
+        if (teacher.getHouse() == null) {
             return ResponseEntity.badRequest().body("House is required.");
         }
-        if(teacher.getHouse().getId() == null) {
+        if (teacher.getHouse().getId() == null) {
             return ResponseEntity.badRequest().body("House ID is required.");
         }
-        if(houseService.get(teacher.getHouse().getId()) == null) {
+        if (houseService.get(teacher.getHouse().getId()) == null) {
             return ResponseEntity.badRequest().body("House with given ID doesnt exist.");
         }
         return null;

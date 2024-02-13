@@ -34,29 +34,29 @@ public class TeacherService {
         var teacherToUpdate = teacherRepository.findById(id);
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
-            if(teacher.getHouse() != null) {
+            if (teacher.getHouse() != null) {
                 var house = houseService.get(teacher.getHouse().getId());
                 updatedTeacher.setHouse(house);
             }
-            if(teacher.getFirstName() != null) {
+            if (teacher.getFirstName() != null) {
                 updatedTeacher.setFirstName(teacher.getFirstName());
             }
-            if(teacher.getMiddleName() != null) {
+            if (teacher.getMiddleName() != null) {
                 updatedTeacher.setMiddleName(teacher.getMiddleName());
             }
-            if(teacher.getLastName() != null) {
+            if (teacher.getLastName() != null) {
                 updatedTeacher.setLastName(teacher.getLastName());
             }
-            if(teacher.getDateOfBirth() != null) {
+            if (teacher.getDateOfBirth() != null) {
                 updatedTeacher.setDateOfBirth(teacher.getDateOfBirth());
             }
-            if(teacher.getEmployment() != null) {
+            if (teacher.getEmployment() != null) {
                 updatedTeacher.setEmployment(teacher.getEmployment());
             }
-            if(teacher.getEmploymentStart() != null) {
+            if (teacher.getEmploymentStart() != null) {
                 updatedTeacher.setEmploymentStart(teacher.getEmploymentStart());
             }
-            if(teacher.getEmploymentEnd() != null) {
+            if (teacher.getEmploymentEnd() != null) {
                 updatedTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
             }
             updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
@@ -67,7 +67,7 @@ public class TeacherService {
     }
 
     public void delete(Long id) {
-        if(id != null){
+        if (id != null) {
             teacherRepository.deleteById(id);
         }
     }

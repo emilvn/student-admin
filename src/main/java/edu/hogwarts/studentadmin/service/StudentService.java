@@ -34,26 +34,26 @@ public class StudentService {
         var studentToUpdate = studentRepository.findById(id);
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
-            if(student.getHouse() != null) {
+            if (student.getHouse() != null) {
                 var house = houseService.get(student.getHouse().getId());
                 updatedStudent.setHouse(house);
             }
-            if(student.getFirstName() != null) {
+            if (student.getFirstName() != null) {
                 updatedStudent.setFirstName(student.getFirstName());
             }
-            if(student.getMiddleName() != null) {
+            if (student.getMiddleName() != null) {
                 updatedStudent.setMiddleName(student.getMiddleName());
             }
-            if(student.getLastName() != null) {
+            if (student.getLastName() != null) {
                 updatedStudent.setLastName(student.getLastName());
             }
-            if(student.getDateOfBirth() != null) {
+            if (student.getDateOfBirth() != null) {
                 updatedStudent.setDateOfBirth(student.getDateOfBirth());
             }
-            if(student.getEnrollmentYear() != 0) {
+            if (student.getEnrollmentYear() != 0) {
                 updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
             }
-            if(student.getGraduationYear() != 0) {
+            if (student.getGraduationYear() != 0) {
                 updatedStudent.setGraduationYear(student.getGraduationYear());
             }
             updatedStudent.setGraduated(student.isGraduated());
@@ -65,7 +65,7 @@ public class StudentService {
     }
 
     public void delete(Long id) {
-        if(id != null){
+        if (id != null) {
             studentRepository.deleteById(id);
         }
     }
