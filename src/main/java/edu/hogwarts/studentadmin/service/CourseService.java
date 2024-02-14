@@ -53,8 +53,7 @@ public class CourseService {
         if (course.getTeacher() != null) {
             var teacher = teacherService.get(course.getTeacher().getId());
             courseToUpdate.setTeacher(teacher);
-        }
-        else{
+        } else {
             courseToUpdate.setTeacher(null);
         }
         if (course.getStudents() != null) {
@@ -63,8 +62,7 @@ public class CourseService {
                     .map(student -> studentService.get(student.getId()))
                     .toList();
             courseToUpdate.setStudents(new ArrayList<>(students));
-        }
-        else{
+        } else {
             courseToUpdate.setStudents(new ArrayList<>());
         }
         courseToUpdate.setSchoolYear(course.getSchoolYear());
@@ -86,7 +84,7 @@ public class CourseService {
         }
         if (course.getStudents() != null) {
             var students = course.getStudents();
-            if(!students.isEmpty()) {
+            if (!students.isEmpty()) {
                 students = students.stream()
                         .map(student -> studentService.get(student.getId()))
                         .toList();
@@ -105,13 +103,12 @@ public class CourseService {
         if (course == null) {
             return null;
         }
-        if(course.getStudents() == null){
+        if (course.getStudents() == null) {
             course.setStudents(new ArrayList<>());
         }
         if (teacher == null) {
             course.setTeacher(null);
-        }
-        else if(teacherService.get(teacher.getId()) == null){
+        } else if (teacherService.get(teacher.getId()) == null) {
             return null;
         }
         course.setTeacher(teacher);
@@ -127,7 +124,7 @@ public class CourseService {
         if (student == null) {
             return null;
         }
-        if(course.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))){
+        if (course.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))) {
             return course;
         }
         course.getStudents().add(student);

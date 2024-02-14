@@ -25,11 +25,11 @@ public class StudentService {
     }
 
     public Student create(Student student) {
-        if(student.getHouse() == null) {
+        if (student.getHouse() == null) {
             student.setHouse(houseService.get(1L));
         }
         var house = houseService.get(student.getHouse().getId());
-        if(house == null) {
+        if (house == null) {
             student.setHouse(houseService.get(1L));
         }
         student.setHouse(house);
@@ -40,11 +40,11 @@ public class StudentService {
         var studentToUpdate = studentRepository.findById(id);
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
-            if(student.getHouse() == null){
+            if (student.getHouse() == null) {
                 updatedStudent.setHouse(houseService.get(1L));
-            }else if(student.getHouse().getId() == null){
+            } else if (student.getHouse().getId() == null) {
                 updatedStudent.setHouse(houseService.get(1L));
-            }else{
+            } else {
                 updatedStudent.setHouse(student.getHouse());
             }
             updatedStudent.setFirstName(student.getFirstName());

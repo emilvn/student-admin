@@ -34,9 +34,9 @@ public class TeacherService {
         var teacherToUpdate = teacherRepository.findById(id);
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
-            if(teacher.getHouse() == null) {
+            if (teacher.getHouse() == null) {
                 teacher.setHouse(houseService.get(1L));
-            }else if(teacher.getHouse().getId() == null) {
+            } else if (teacher.getHouse().getId() == null) {
                 teacher.setHouse(houseService.get(1L));
             }
             var house = houseService.get(teacher.getHouse().getId());

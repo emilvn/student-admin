@@ -173,7 +173,7 @@ public class CourseServiceTest {
         return course;
     }
 
-    private Course createCourse(){
+    private Course createCourse() {
         Course course = new Course();
         course.setSubject("Updated");
         return course;
