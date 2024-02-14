@@ -1,6 +1,7 @@
 package edu.hogwarts.studentadmin.service;
 
 import edu.hogwarts.studentadmin.model.Course;
+import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.CourseRepository;
 import org.springframework.stereotype.Service;
 
@@ -67,6 +68,35 @@ public class CourseService {
         }
         courseToUpdate.setCurrent(course.isCurrent());
         return courseRepository.save(courseToUpdate);
+    }
+
+    public Course updateTeacher(Long id, Teacher teacher) {
+        var course = get(id);
+        if (course == null) {
+            return null;
+        }
+        if (teacher == null) {
+            course.setTeacher(null);
+            return courseRepository.save(course);
+        }
+        if(teacherService.get(teacher.getId()) == null){
+            return null;
+        }
+        course.setTeacher(teacher);
+        return courseRepository.save(course);
+    }
+
+    public Course addStudent(Long id, Long studentId) {
+        var course = get(id);
+        if (course == null) {
+            return null;
+        }
+        var student = studentService.get(studentId);
+        if (student == null) {
+            return null;
+        }
+        course.getStudents().add(student);
+        return courseRepository.save(course);
     }
 
     public void delete(Long id) {

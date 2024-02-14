@@ -93,16 +93,10 @@ public class CourseController {
 
     @PutMapping("/{id}/teacher")
     public ResponseEntity<Object> updateTeacher(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
-        var teacherToAssign = teacherService.get(teacher.getId());
-        var course = courseService.get(id);
-        if (course == null) {
+        var updatedCourse = courseService.updateTeacher(id, teacher);
+        if (updatedCourse == null) {
             return ResponseEntity.notFound().build();
         }
-        if (teacherToAssign == null) {
-            return ResponseEntity.badRequest().body("Invalid teacher id.");
-        }
-        course.setTeacher(teacherToAssign);
-        var updatedCourse = courseService.update(id, course);
         return ResponseEntity.ok(updatedCourse);
     }
 
@@ -119,8 +113,7 @@ public class CourseController {
         if (courseToUpdate.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))) {
             return ResponseEntity.badRequest().body("Student already enrolled in course.");
         }
-        courseToUpdate.getStudents().add(student);
-        var updatedCourse = courseService.update(id, courseToUpdate);
+        var updatedCourse = courseService.addStudent(id, studentId);
         return ResponseEntity.ok(updatedCourse);
     }
 
