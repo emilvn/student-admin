@@ -91,7 +91,16 @@ public class CourseController {
         return ResponseEntity.ok(updatedCourse);
     }
 
-    @PutMapping("/{id}/teacher")
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> patch(@RequestBody Course course, @PathVariable("id") Long id) {
+        var updatedCourse = courseService.patch(id, course);
+        if (updatedCourse == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedCourse);
+    }
+
+    @PatchMapping("/{id}/teacher")
     public ResponseEntity<Object> updateTeacher(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
         var updatedCourse = courseService.updateTeacher(id, teacher);
         if (updatedCourse == null) {
@@ -109,9 +118,6 @@ public class CourseController {
         }
         if (student == null) {
             return ResponseEntity.badRequest().body("Invalid student id.");
-        }
-        if (courseToUpdate.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))) {
-            return ResponseEntity.badRequest().body("Student already enrolled in course.");
         }
         var updatedCourse = courseService.addStudent(id, studentId);
         return ResponseEntity.ok(updatedCourse);

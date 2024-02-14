@@ -49,6 +49,34 @@ public class CourseService {
         if (courseToUpdate == null) {
             return null;
         }
+        courseToUpdate.setSubject(course.getSubject());
+        if (course.getTeacher() != null) {
+            var teacher = teacherService.get(course.getTeacher().getId());
+            courseToUpdate.setTeacher(teacher);
+        }
+        else{
+            courseToUpdate.setTeacher(null);
+        }
+        if (course.getStudents() != null) {
+            var students = course.getStudents()
+                    .stream()
+                    .map(student -> studentService.get(student.getId()))
+                    .toList();
+            courseToUpdate.setStudents(new ArrayList<>(students));
+        }
+        else{
+            courseToUpdate.setStudents(new ArrayList<>());
+        }
+        courseToUpdate.setSchoolYear(course.getSchoolYear());
+        courseToUpdate.setCurrent(course.isCurrent());
+        return courseRepository.save(courseToUpdate);
+    }
+
+    public Course patch(Long id, Course course) {
+        var courseToUpdate = get(id);
+        if (courseToUpdate == null) {
+            return null;
+        }
         if (course.getSubject() != null) {
             courseToUpdate.setSubject(course.getSubject());
         }
@@ -57,11 +85,13 @@ public class CourseService {
             courseToUpdate.setTeacher(teacher);
         }
         if (course.getStudents() != null) {
-            var students = course.getStudents()
-                    .stream()
-                    .map(student -> studentService.get(student.getId()))
-                    .toList();
-            courseToUpdate.setStudents(new ArrayList<>(students));
+            var students = course.getStudents();
+            if(!students.isEmpty()) {
+                students = students.stream()
+                        .map(student -> studentService.get(student.getId()))
+                        .toList();
+                courseToUpdate.setStudents(students);
+            }
         }
         if (course.getSchoolYear() != 0) {
             courseToUpdate.setSchoolYear(course.getSchoolYear());
@@ -75,11 +105,13 @@ public class CourseService {
         if (course == null) {
             return null;
         }
+        if(course.getStudents() == null){
+            course.setStudents(new ArrayList<>());
+        }
         if (teacher == null) {
             course.setTeacher(null);
-            return courseRepository.save(course);
         }
-        if(teacherService.get(teacher.getId()) == null){
+        else if(teacherService.get(teacher.getId()) == null){
             return null;
         }
         course.setTeacher(teacher);
@@ -94,6 +126,9 @@ public class CourseService {
         var student = studentService.get(studentId);
         if (student == null) {
             return null;
+        }
+        if(course.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))){
+            return course;
         }
         course.getStudents().add(student);
         return courseRepository.save(course);
