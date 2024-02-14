@@ -54,6 +54,15 @@ public class TeacherController {
         return ResponseEntity.ok(updatedTeacher);
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Teacher> patch(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
+        var updatedTeacher = teacherService.patch(teacher, id);
+        if (updatedTeacher == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(updatedTeacher);
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Teacher> delete(@PathVariable("id") Long id) {
         var teacher = teacherService.get(id);

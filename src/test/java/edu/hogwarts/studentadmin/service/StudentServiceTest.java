@@ -7,8 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -19,8 +18,8 @@ public class StudentServiceTest {
 
     @Test
     void createStudentTest() {
-        House house = createHouse(1L, "Gryffindor");
-        Student student = createStudent("Test", house);
+        House house = createHouse();
+        Student student = createStudent(house);
         Student addedStudent = studentService.create(student);
 
         assertEquals("Test", addedStudent.getFirstName());
@@ -28,35 +27,57 @@ public class StudentServiceTest {
     }
 
     @Test
+    void patchStudentTest() {
+        Student student = createStudent();
+        Student updatedStudent = studentService.patch(student, 1L);
+
+        // Test that only first name is updated
+        assertEquals("Harold", updatedStudent.getFirstName());
+        assertEquals("Potter", updatedStudent.getLastName());
+        assertEquals("Gryffindor", updatedStudent.getHouse().getName());
+
+        updatedStudent = studentService.patch(student, -2L);
+        assertNull(updatedStudent);
+    }
+
+    @Test
     void updateStudentTest() {
-        House house = createHouse(2L, "Hufflepuff");
-        Student student = createStudent(house);
+        Student student = createStudent();
         Student updatedStudent = studentService.update(student, 1L);
 
+        // Test that all properties are overwritten
         assertEquals("Harold", updatedStudent.getFirstName());
-        assertEquals("Hufflepuff", updatedStudent.getHouse().getName());
+        assertNull(updatedStudent.getMiddleName());
+        assertNull(updatedStudent.getLastName());
+        assertNull(updatedStudent.getDateOfBirth());
+        assertEquals(0, updatedStudent.getEnrollmentYear());
+        assertEquals(0, updatedStudent.getGraduationYear());
+        assertFalse(updatedStudent.isGraduated());
+        assertFalse(updatedStudent.isPrefect());
+        assertEquals("Gryffindor", updatedStudent.getHouse().getName());
 
         updatedStudent = studentService.update(student, -2L);
         assertNull(updatedStudent);
     }
 
-    private House createHouse(Long id, String name) {
+    private House createHouse() {
         House house = new House();
-        house.setId(id);
-        house.setName(name);
+        house.setId(1L);
+        house.setName("Gryffindor");
         return house;
     }
 
-    private Student createStudent(String firstName, House house) {
+    private Student createStudent(House house) {
         Student student = new Student();
-        student.setFirstName(firstName);
+        student.setFirstName("Test");
         student.setHouse(house);
         return student;
     }
 
-    private Student createStudent(House house) {
-        Student student = createStudent("Harold", house);
+    private Student createStudent() {
+        Student student = new Student();
         student.setId(1L);
+        student.setFirstName("Harold");
         return student;
     }
 }

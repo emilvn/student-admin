@@ -29,14 +29,29 @@ public class TeacherServiceTest {
 
     @Test
     void updateTeacherTest() {
-        House house = createHouse(2L, "Hufflepuff");
+        House house = createHouse(1L, "Gryffindor");
         Teacher teacher = createTeacher(house);
         Teacher updatedTeacher = teacherService.update(teacher, 1L);
 
         assertEquals("Harold", updatedTeacher.getFirstName());
-        assertEquals("Hufflepuff", updatedTeacher.getHouse().getName());
+        assertNull(updatedTeacher.getMiddleName());
+        assertNull(updatedTeacher.getLastName());
+        assertEquals("Gryffindor", updatedTeacher.getHouse().getName());
 
         updatedTeacher = teacherService.update(teacher, -2L);
+        assertNull(updatedTeacher);
+    }
+
+    @Test
+    void patchTeacherTest() {
+        House house = createHouse(2L, "Hufflepuff");
+        Teacher teacher = createTeacher(house);
+        Teacher updatedTeacher = teacherService.patch(teacher, 1L);
+
+        assertEquals("Harold", updatedTeacher.getFirstName());
+        assertEquals("Hufflepuff", updatedTeacher.getHouse().getName());
+
+        updatedTeacher = teacherService.patch(teacher, -2L);
         assertNull(updatedTeacher);
     }
 

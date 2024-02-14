@@ -34,6 +34,30 @@ public class TeacherService {
         var teacherToUpdate = teacherRepository.findById(id);
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
+            if(teacher.getHouse() == null) {
+                teacher.setHouse(houseService.get(1L));
+            }else if(teacher.getHouse().getId() == null) {
+                teacher.setHouse(houseService.get(1L));
+            }
+            var house = houseService.get(teacher.getHouse().getId());
+            updatedTeacher.setHouse(house);
+            updatedTeacher.setFirstName(teacher.getFirstName());
+            updatedTeacher.setMiddleName(teacher.getMiddleName());
+            updatedTeacher.setLastName(teacher.getLastName());
+            updatedTeacher.setDateOfBirth(teacher.getDateOfBirth());
+            updatedTeacher.setEmployment(teacher.getEmployment());
+            updatedTeacher.setEmploymentStart(teacher.getEmploymentStart());
+            updatedTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
+            updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
+            return teacherRepository.save(updatedTeacher);
+        }
+        return null;
+    }
+
+    public Teacher patch(Teacher teacher, Long id) {
+        var teacherToUpdate = teacherRepository.findById(id);
+        if (teacherToUpdate.isPresent()) {
+            var updatedTeacher = teacherToUpdate.get();
             if (teacher.getHouse() != null) {
                 var house = houseService.get(teacher.getHouse().getId());
                 updatedTeacher.setHouse(house);

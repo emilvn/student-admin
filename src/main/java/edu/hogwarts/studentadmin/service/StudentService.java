@@ -25,12 +25,42 @@ public class StudentService {
     }
 
     public Student create(Student student) {
+        if(student.getHouse() == null) {
+            student.setHouse(houseService.get(1L));
+        }
         var house = houseService.get(student.getHouse().getId());
+        if(house == null) {
+            student.setHouse(houseService.get(1L));
+        }
         student.setHouse(house);
         return studentRepository.save(student);
     }
 
     public Student update(Student student, Long id) {
+        var studentToUpdate = studentRepository.findById(id);
+        if (studentToUpdate.isPresent()) {
+            var updatedStudent = studentToUpdate.get();
+            if(student.getHouse() == null){
+                updatedStudent.setHouse(houseService.get(1L));
+            }else if(student.getHouse().getId() == null){
+                updatedStudent.setHouse(houseService.get(1L));
+            }else{
+                updatedStudent.setHouse(student.getHouse());
+            }
+            updatedStudent.setFirstName(student.getFirstName());
+            updatedStudent.setMiddleName(student.getMiddleName());
+            updatedStudent.setLastName(student.getLastName());
+            updatedStudent.setDateOfBirth(student.getDateOfBirth());
+            updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
+            updatedStudent.setGraduationYear(student.getGraduationYear());
+            updatedStudent.setGraduated(student.isGraduated());
+            updatedStudent.setPrefect(student.isPrefect());
+            return studentRepository.save(updatedStudent);
+        }
+        return null;
+    }
+
+    public Student patch(Student student, Long id) {
         var studentToUpdate = studentRepository.findById(id);
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
