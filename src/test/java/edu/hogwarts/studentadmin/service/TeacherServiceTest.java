@@ -30,7 +30,7 @@ public class TeacherServiceTest {
     @Test
     void updateTeacherTest() {
         House house = createHouse(2L, "Hufflepuff");
-        Teacher teacher = createTeacher(1L, "Harold", house);
+        Teacher teacher = createTeacher(house);
         Teacher updatedTeacher = teacherService.update(teacher, 1L);
 
         assertEquals("Harold", updatedTeacher.getFirstName());
@@ -54,9 +54,9 @@ public class TeacherServiceTest {
         return teacher;
     }
 
-    private Teacher createTeacher(Long id, String firstName, House house) {
-        Teacher teacher = createTeacher(firstName, house);
-        teacher.setId(id);
+    private Teacher createTeacher(House house) {
+        Teacher teacher = createTeacher("Harold", house);
+        teacher.setId(1L);
         return teacher;
     }
 }

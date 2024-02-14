@@ -31,7 +31,7 @@ public class StudentControllerTest {
 
     @BeforeEach
     void setUp() {
-        Student student = createStudent(1L);
+        Student student = createStudent();
         when(studentService.getAll()).thenReturn(List.of(student));
         when(studentService.get(1L)).thenReturn(student);
         when(studentService.get(2L)).thenReturn(null);
@@ -91,9 +91,9 @@ public class StudentControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    private Student createStudent(Long id) {
+    private Student createStudent() {
         Student student = new Student();
-        student.setId(id);
+        student.setId(1L);
         return student;
     }
 }

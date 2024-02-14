@@ -31,7 +31,7 @@ public class TeacherControllerTest {
 
     @BeforeEach
     void setUp() {
-        Teacher teacher = createTeacher(1L);
+        Teacher teacher = createTeacher();
         when(teacherService.getAll()).thenReturn(List.of(teacher));
         when(teacherService.get(1L)).thenReturn(teacher);
         when(teacherService.get(2L)).thenReturn(null);
@@ -91,9 +91,9 @@ public class TeacherControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    private Teacher createTeacher(Long id) {
+    private Teacher createTeacher() {
         Teacher teacher = new Teacher();
-        teacher.setId(id);
+        teacher.setId(1L);
         return teacher;
     }
 }

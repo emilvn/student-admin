@@ -46,8 +46,8 @@ class CourseControllerTest {
         Course course = createCourse(1L, "Test Course", "Gryffindor", 1L, 1L);
         Course courseWithNoTeacher = createCourse(3L, "No Teacher Course", null, null, null);
         Course updatedCourse = createCourse(1L, "Updated Course", "Hufflepuff", 1L, 1L);
-        Teacher teacher = createTeacher(1L, "Teacher");
-        Student student = createStudent(1L, "Student");
+        Teacher teacher = createTeacher();
+        Student student = createStudent();
 
         when(courseService.get(1L)).thenReturn(course);
         when(courseService.get(2L)).thenReturn(null);
@@ -205,17 +205,17 @@ class CourseControllerTest {
         return course;
     }
 
-    private Teacher createTeacher(Long id, String firstName) {
+    private Teacher createTeacher() {
         Teacher teacher = new Teacher();
-        teacher.setId(id);
-        teacher.setFirstName(firstName);
+        teacher.setId(1L);
+        teacher.setFirstName("Teacher");
         return teacher;
     }
 
-    private Student createStudent(Long id, String firstName) {
+    private Student createStudent() {
         Student student = new Student();
-        student.setId(id);
-        student.setFirstName(firstName);
+        student.setId(1L);
+        student.setFirstName("Student");
         return student;
     }
 }
