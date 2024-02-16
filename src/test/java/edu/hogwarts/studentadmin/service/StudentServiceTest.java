@@ -2,12 +2,18 @@ package edu.hogwarts.studentadmin.service;
 
 import edu.hogwarts.studentadmin.model.House;
 import edu.hogwarts.studentadmin.model.Student;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @Transactional
@@ -16,68 +22,68 @@ public class StudentServiceTest {
     @Autowired
     private StudentService studentService;
 
-    @Test
-    void createStudentTest() {
-        House house = createHouse();
-        Student student = createStudent(house);
-        Student addedStudent = studentService.create(student);
+    @MockBean
+    private HouseService houseService;
 
-        assertEquals("Test", addedStudent.getFirstName());
-        assertEquals("Gryffindor", addedStudent.getHouse().getName());
+    @BeforeEach
+    void setUp() {
+        var gryffindor = new House(1L, "Gryffindor", "Godric Gryffindor", new ArrayList<>(List.of("Red", "Gold")));
+        var hufflepuff = new House(2L, "Hufflepuff", "Helga Hufflepuff", new ArrayList<>(List.of("Yellow", "Black")));
+        var testHouse = new House(3L, "Test house", null, null);
+
+        when(houseService.get(1L)).thenReturn(gryffindor);
+        when(houseService.get(2L)).thenReturn(hufflepuff);
+        when(houseService.get(3L)).thenReturn(testHouse);
+        when(houseService.get(5L)).thenReturn(null);
     }
 
     @Test
-    void patchStudentTest() {
-        Student student = createStudent();
-        Student updatedStudent = studentService.patch(student, 1L);
+    void createStudentTest() {
+        var student = new Student();
+        var house = new House();
+        house.setId(3L);
+        house.setName("Test house");
+        student.setHouse(house);
+        student.setFirstName("Test create");
+        var addedStudent = studentService.create(student);
 
-        // Test that only first name is updated
-        assertEquals("Harold", updatedStudent.getFirstName());
-        assertEquals("Potter", updatedStudent.getLastName());
-        assertEquals("Gryffindor", updatedStudent.getHouse().getName());
-
-        updatedStudent = studentService.patch(student, -2L);
-        assertNull(updatedStudent);
+        assertEquals("Test create", addedStudent.getFirstName(), "First name should be added");
+        assertEquals("Test house", addedStudent.getHouse().getName(), "House should be added");
     }
 
     @Test
     void updateStudentTest() {
-        Student student = createStudent();
-        Student updatedStudent = studentService.update(student, 1L);
+        var student = new Student();
+        student.setFirstName("Test put");
+        var updatedStudent = studentService.update(student, 1L);
 
         // Test that all properties are overwritten
-        assertEquals("Harold", updatedStudent.getFirstName());
-        assertNull(updatedStudent.getMiddleName());
-        assertNull(updatedStudent.getLastName());
-        assertNull(updatedStudent.getDateOfBirth());
-        assertEquals(0, updatedStudent.getEnrollmentYear());
-        assertEquals(0, updatedStudent.getGraduationYear());
-        assertFalse(updatedStudent.isGraduated());
-        assertFalse(updatedStudent.isPrefect());
-        assertEquals("Gryffindor", updatedStudent.getHouse().getName());
+        assertEquals("Test put", updatedStudent.getFirstName(), "First name should be overridden");
+        assertNull(updatedStudent.getMiddleName(), "Middle name should be overridden");
+        assertNull(updatedStudent.getLastName(), "Last name should be overridden");
+        assertNull(updatedStudent.getDateOfBirth(), "Date of birth should be overridden");
+        assertEquals(0, updatedStudent.getEnrollmentYear(), "Enrollment year should be overridden");
+        assertEquals(0, updatedStudent.getGraduationYear(), "Graduation year should be overridden");
+        assertFalse(updatedStudent.isGraduated(), "Graduated should be overridden");
+        assertFalse(updatedStudent.isPrefect(), "Prefect should be overridden");
+        assertNull(updatedStudent.getHouse(), "House should be overridden");
 
         updatedStudent = studentService.update(student, -2L);
+        assertNull(updatedStudent, "Should return null for invalid student id");
+    }
+
+    @Test
+    void patchStudentTest() {
+        var student = new Student();
+        student.setFirstName("Test patch");
+        var updatedStudent = studentService.patch(student, 1L);
+
+        // Test that only first name is updated
+        assertEquals("Test patch", updatedStudent.getFirstName(), "First name should be updated");
+        assertEquals("Potter", updatedStudent.getLastName(), "Last name should stay the same");
+        assertEquals("Gryffindor", updatedStudent.getHouse().getName(), "House should stay the same");
+
+        updatedStudent = studentService.patch(student, -2L);
         assertNull(updatedStudent);
-    }
-
-    private House createHouse() {
-        House house = new House();
-        house.setId(1L);
-        house.setName("Gryffindor");
-        return house;
-    }
-
-    private Student createStudent(House house) {
-        Student student = new Student();
-        student.setFirstName("Test");
-        student.setHouse(house);
-        return student;
-    }
-
-    private Student createStudent() {
-        Student student = new Student();
-        student.setId(1L);
-        student.setFirstName("Harold");
-        return student;
     }
 }

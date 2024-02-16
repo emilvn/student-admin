@@ -35,12 +35,12 @@ public class TeacherService {
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
             if (teacher.getHouse() == null) {
-                teacher.setHouse(houseService.get(1L));
+                updatedTeacher.setHouse(null);
             } else if (teacher.getHouse().getId() == null) {
-                teacher.setHouse(houseService.get(1L));
+                updatedTeacher.setHouse(null);
+            } else {
+                updatedTeacher.setHouse(teacher.getHouse());
             }
-            var house = houseService.get(teacher.getHouse().getId());
-            updatedTeacher.setHouse(house);
             updatedTeacher.setFirstName(teacher.getFirstName());
             updatedTeacher.setMiddleName(teacher.getMiddleName());
             updatedTeacher.setLastName(teacher.getLastName());
@@ -60,7 +60,9 @@ public class TeacherService {
             var updatedTeacher = teacherToUpdate.get();
             if (teacher.getHouse() != null) {
                 var house = houseService.get(teacher.getHouse().getId());
-                updatedTeacher.setHouse(house);
+                if(house != null){
+                    updatedTeacher.setHouse(house);
+                }
             }
             if (teacher.getFirstName() != null) {
                 updatedTeacher.setFirstName(teacher.getFirstName());

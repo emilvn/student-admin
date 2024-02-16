@@ -8,6 +8,7 @@ import edu.hogwarts.studentadmin.repository.HouseRepository;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;

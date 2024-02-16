@@ -26,11 +26,11 @@ public class StudentService {
 
     public Student create(Student student) {
         if (student.getHouse() == null) {
-            student.setHouse(houseService.get(1L));
+            student.setHouse(null);
         }
         var house = houseService.get(student.getHouse().getId());
         if (house == null) {
-            student.setHouse(houseService.get(1L));
+            student.setHouse(null);
         }
         student.setHouse(house);
         return studentRepository.save(student);
@@ -41,9 +41,9 @@ public class StudentService {
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
             if (student.getHouse() == null) {
-                updatedStudent.setHouse(houseService.get(1L));
+                updatedStudent.setHouse(null);
             } else if (student.getHouse().getId() == null) {
-                updatedStudent.setHouse(houseService.get(1L));
+                updatedStudent.setHouse(null);
             } else {
                 updatedStudent.setHouse(student.getHouse());
             }
@@ -66,7 +66,9 @@ public class StudentService {
             var updatedStudent = studentToUpdate.get();
             if (student.getHouse() != null) {
                 var house = houseService.get(student.getHouse().getId());
-                updatedStudent.setHouse(house);
+                if(house != null){
+                    updatedStudent.setHouse(house);
+                }
             }
             if (student.getFirstName() != null) {
                 updatedStudent.setFirstName(student.getFirstName());
