@@ -1,7 +1,6 @@
 package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Student;
-import edu.hogwarts.studentadmin.service.HouseService;
 import edu.hogwarts.studentadmin.service.StudentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,11 +12,9 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService studentService;
-    private final HouseService houseService;
 
-    public StudentController(StudentService studentService, HouseService houseService) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
-        this.houseService = houseService;
     }
 
     @GetMapping

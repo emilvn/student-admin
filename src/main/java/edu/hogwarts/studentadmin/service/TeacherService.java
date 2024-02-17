@@ -1,5 +1,6 @@
 package edu.hogwarts.studentadmin.service;
 
+import edu.hogwarts.studentadmin.model.House;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,12 @@ public class TeacherService {
     }
 
     public Teacher create(Teacher teacher) {
-        var house = houseService.get(teacher.getHouse().getId());
+        House house = teacher.getHouse();
+        if(house != null){
+            if(house.getId() != null){
+                house = houseService.get(house.getId());
+            }
+        }
         teacher.setHouse(house);
         return teacherRepository.save(teacher);
     }

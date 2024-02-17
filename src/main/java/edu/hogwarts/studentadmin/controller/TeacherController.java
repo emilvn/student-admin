@@ -39,9 +39,6 @@ public class TeacherController {
 
     @PostMapping
     public ResponseEntity<Object> create(@RequestBody Teacher teacher) {
-        if (validateTeacher(teacher) != null) {
-            return validateTeacher(teacher);
-        }
         return ResponseEntity.ok(teacherService.create(teacher));
     }
 
@@ -72,25 +69,6 @@ public class TeacherController {
 
         teacherService.delete(id);
         return ResponseEntity.ok(teacher);
-    }
-
-    private ResponseEntity<Object> validateTeacher(Teacher teacher) {
-        if (teacher == null) {
-            return ResponseEntity.notFound().build();
-        }
-        if (teacher.getFirstName() == null) {
-            return ResponseEntity.badRequest().body("First name is required.");
-        }
-        if (teacher.getHouse() == null) {
-            return ResponseEntity.badRequest().body("House is required.");
-        }
-        if (teacher.getHouse().getId() == null) {
-            return ResponseEntity.badRequest().body("House ID is required.");
-        }
-        if (houseService.get(teacher.getHouse().getId()) == null) {
-            return ResponseEntity.badRequest().body("House with given ID doesnt exist.");
-        }
-        return null;
     }
 
 }
