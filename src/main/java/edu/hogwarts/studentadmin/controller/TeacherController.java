@@ -10,13 +10,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/teachers")
+@CrossOrigin
 public class TeacherController {
     private final TeacherService teacherService;
-    private final HouseService houseService;
 
-    public TeacherController(TeacherService teacherService, HouseService houseService) {
+    public TeacherController(TeacherService teacherService) {
         this.teacherService = teacherService;
-        this.houseService = houseService;
     }
 
     @GetMapping
