@@ -1,8 +1,10 @@
 package edu.hogwarts.studentadmin.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 @Entity(name = "teacher")
 public class Teacher {
@@ -115,6 +117,11 @@ public class Teacher {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    @JsonGetter("age")
+    public int getAge() {
+        return Period.between(dateOfBirth, LocalDate.now().withYear(1992)).getYears();
     }
 
     @Override
