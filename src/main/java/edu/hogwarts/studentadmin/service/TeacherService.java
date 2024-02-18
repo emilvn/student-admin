@@ -27,8 +27,8 @@ public class TeacherService {
 
     public Teacher create(Teacher teacher) {
         House house = teacher.getHouse();
-        if(house != null){
-            if(house.getId() != null){
+        if (house != null) {
+            if (house.getId() != null) {
                 house = houseService.get(house.getId());
             }
         }
@@ -66,7 +66,7 @@ public class TeacherService {
             var updatedTeacher = teacherToUpdate.get();
             if (teacher.getHouse() != null) {
                 var house = houseService.get(teacher.getHouse().getId());
-                if(house != null){
+                if (house != null) {
                     updatedTeacher.setHouse(house);
                 }
             }

@@ -1,7 +1,6 @@
 package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Teacher;
-import edu.hogwarts.studentadmin.service.HouseService;
 import edu.hogwarts.studentadmin.service.TeacherService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

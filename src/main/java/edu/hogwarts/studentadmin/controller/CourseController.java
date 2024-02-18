@@ -101,7 +101,7 @@ public class CourseController {
         return ResponseEntity.ok(updatedCourse);
     }
 
-    @PatchMapping("/{id}/teacher")
+    @PutMapping("/{id}/teacher")
     public ResponseEntity<Object> updateTeacher(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
         var updatedCourse = courseService.updateTeacher(id, teacher);
         if (updatedCourse == null) {

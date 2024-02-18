@@ -121,6 +121,7 @@ public class Teacher {
 
     @JsonGetter("age")
     public int getAge() {
+        if (dateOfBirth == null) return 0;
         return Period.between(dateOfBirth, LocalDate.now().withYear(1992)).getYears();
     }
 
