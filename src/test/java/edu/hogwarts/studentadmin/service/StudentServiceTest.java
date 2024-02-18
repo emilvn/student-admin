@@ -54,13 +54,13 @@ public class StudentServiceTest {
     @Test
     void updateStudentTest() {
         var student = new Student();
-        student.setFirstName("Test put");
+        student.setFullName("Test put");
         var updatedStudent = studentService.update(student, 1L);
 
         // Test that all properties are overwritten
-        assertEquals("Test put", updatedStudent.getFirstName(), "First name should be overridden");
+        assertEquals("Test", updatedStudent.getFirstName(), "First name should be overridden");
+        assertEquals("put", updatedStudent.getLastName(), "Last name should be overridden");
         assertNull(updatedStudent.getMiddleName(), "Middle name should be overridden");
-        assertNull(updatedStudent.getLastName(), "Last name should be overridden");
         assertNull(updatedStudent.getDateOfBirth(), "Date of birth should be overridden");
         assertEquals(0, updatedStudent.getEnrollmentYear(), "Enrollment year should be overridden");
         assertEquals(0, updatedStudent.getGraduationYear(), "Graduation year should be overridden");
@@ -75,12 +75,13 @@ public class StudentServiceTest {
     @Test
     void patchStudentTest() {
         var student = new Student();
-        student.setFirstName("Test patch");
+        student.setFullName("Test patch");
         var updatedStudent = studentService.patch(student, 1L);
 
         // Test that only first name is updated
-        assertEquals("Test patch", updatedStudent.getFirstName(), "First name should be updated");
-        assertEquals("Potter", updatedStudent.getLastName(), "Last name should stay the same");
+        assertEquals("Test", updatedStudent.getFirstName(), "Name should be updated");
+        assertNull(updatedStudent.getMiddleName(), "Name should be updated");
+        assertEquals("patch", updatedStudent.getLastName(), "Name should be updated");
         assertEquals("Gryffindor", updatedStudent.getHouse().getName(), "House should stay the same");
 
         updatedStudent = studentService.patch(student, -2L);

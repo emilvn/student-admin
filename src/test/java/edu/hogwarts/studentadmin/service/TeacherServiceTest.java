@@ -44,22 +44,22 @@ public class TeacherServiceTest {
         house.setId(3L);
         house.setName("Test house");
         teacher.setHouse(house);
-        teacher.setFirstName("Test create");
+        teacher.setFullName("Test create");
         Teacher addedTeacher = teacherService.create(teacher);
 
-        assertEquals("Test create", addedTeacher.getFirstName());
+        assertEquals("Test create", addedTeacher.getFullName());
         assertEquals("Test house", addedTeacher.getHouse().getName());
     }
 
     @Test
     void updateTeacherTest() {
         var teacher = new Teacher();
-        teacher.setFirstName("Test put");
+        teacher.setFullName("Test put");
         Teacher updatedTeacher = teacherService.update(teacher, 1L);
 
-        assertEquals("Test put", updatedTeacher.getFirstName(), "First name should be overridden");
-        assertNull(updatedTeacher.getMiddleName(), "Middle name should be overridden");
-        assertNull(updatedTeacher.getLastName(), "Last name should be overridden");
+        assertEquals("Test", updatedTeacher.getFirstName(), "First name should be overridden");
+        assertNull(updatedTeacher.getMiddleName(), "Middle name should be updated");
+        assertEquals("put", updatedTeacher.getLastName(), "Last name should be overridden");
         assertNull(updatedTeacher.getDateOfBirth(), "Date of birth should be overridden");
         assertNull(updatedTeacher.getEmploymentStart(), "Enrollment year should be overridden");
         assertNull(updatedTeacher.getEmploymentEnd(), "Graduation year should be overridden");
@@ -72,10 +72,10 @@ public class TeacherServiceTest {
     @Test
     void patchTeacherTest() {
         var teacher = new Teacher();
-        teacher.setFirstName("Test patch");
+        teacher.setFullName("Test patch");
         var updatedTeacher = teacherService.patch(teacher, 1L);
 
-        assertEquals("Test patch", updatedTeacher.getFirstName());
+        assertEquals("Test", updatedTeacher.getFirstName());
         assertEquals("Gryffindor", updatedTeacher.getHouse().getName());
 
         updatedTeacher = teacherService.patch(teacher, -2L);

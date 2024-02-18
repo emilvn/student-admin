@@ -1,6 +1,8 @@
 package edu.hogwarts.studentadmin.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -17,28 +19,68 @@ public abstract class HogwartsPerson {
     protected LocalDate dateOfBirth;
     protected @ManyToOne(fetch = FetchType.EAGER) House house;
 
+    @JsonIgnore
     public String getFirstName() {
         return firstName;
     }
 
+    @JsonIgnore
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    @JsonIgnore
     public String getMiddleName() {
         return middleName;
     }
 
+    @JsonIgnore
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
     }
 
+    @JsonIgnore
     public String getLastName() {
         return lastName;
     }
 
+    @JsonIgnore
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @JsonGetter("fullName")
+    public String getFullName() {
+        String fullName = firstName;
+
+        if (middleName != null) {
+            fullName += " " + middleName;
+        }
+        if(lastName != null) {
+            fullName += " " + lastName;
+        }
+        return fullName;
+    }
+
+    @JsonSetter("fullName")
+    public void setFullName(String fullName) {
+        int firstSpace = fullName.indexOf(' ');
+        int lastSpace = fullName.lastIndexOf(' ');
+
+        if(firstSpace == -1) {
+            setFirstName(fullName);
+            setMiddleName(null);
+            setLastName(null);
+        }
+        else if (firstSpace == lastSpace) {
+            setFirstName(fullName.substring(0, firstSpace));
+            setMiddleName(null);
+            setLastName(fullName.substring(firstSpace + 1));
+        } else {
+            setFirstName(fullName.substring(0, firstSpace));
+            setMiddleName(fullName.substring(firstSpace + 1, lastSpace));
+            setLastName(fullName.substring(lastSpace + 1));
+        }
     }
 
     public LocalDate getDateOfBirth() {
@@ -47,6 +89,12 @@ public abstract class HogwartsPerson {
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    @JsonGetter("age")
+    public int getAge() {
+        if (dateOfBirth == null) return 0;
+        return Period.between(dateOfBirth, LocalDate.now().withYear(1992)).getYears();
     }
 
     public House getHouse() {
@@ -63,16 +111,5 @@ public abstract class HogwartsPerson {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    @JsonGetter("age")
-    public int getAge() {
-        if (dateOfBirth == null) return 0;
-        return Period.between(dateOfBirth, LocalDate.now().withYear(1992)).getYears();
-    }
-
-    @JsonGetter("fullName")
-    public String getFullName() {
-        return firstName + " " + middleName + " " + lastName;
     }
 }

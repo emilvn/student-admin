@@ -22,9 +22,7 @@ public class TeacherService extends HogwartsPersonService<Teacher> {
             } else {
                 updatedTeacher.setHouse(teacher.getHouse());
             }
-            updatedTeacher.setFirstName(teacher.getFirstName());
-            updatedTeacher.setMiddleName(teacher.getMiddleName());
-            updatedTeacher.setLastName(teacher.getLastName());
+            updatedTeacher.setFullName(teacher.getFullName());
             updatedTeacher.setDateOfBirth(teacher.getDateOfBirth());
             updatedTeacher.setEmployment(teacher.getEmployment());
             updatedTeacher.setEmploymentStart(teacher.getEmploymentStart());
@@ -45,14 +43,8 @@ public class TeacherService extends HogwartsPersonService<Teacher> {
                     updatedTeacher.setHouse(house);
                 }
             }
-            if (teacher.getFirstName() != null) {
-                updatedTeacher.setFirstName(teacher.getFirstName());
-            }
-            if (teacher.getMiddleName() != null) {
-                updatedTeacher.setMiddleName(teacher.getMiddleName());
-            }
-            if (teacher.getLastName() != null) {
-                updatedTeacher.setLastName(teacher.getLastName());
+            if (teacher.getFullName() != null) {
+                updatedTeacher.setFullName(teacher.getFirstName());
             }
             if (teacher.getDateOfBirth() != null) {
                 updatedTeacher.setDateOfBirth(teacher.getDateOfBirth());
