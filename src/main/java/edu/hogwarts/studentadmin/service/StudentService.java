@@ -1,43 +1,17 @@
 package edu.hogwarts.studentadmin.service;
 
-import edu.hogwarts.studentadmin.model.House;
 import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class StudentService {
-    private final StudentRepository studentRepository;
-    private final HouseService houseService;
-
+public class StudentService extends HogwartsPersonService<Student> {
     public StudentService(StudentRepository studentRepository, HouseService houseService) {
-        this.studentRepository = studentRepository;
-        this.houseService = houseService;
-    }
-
-    public List<Student> getAll() {
-        return studentRepository.findAll();
-    }
-
-    public Student get(Long id) {
-        return studentRepository.findById(id).orElse(null);
-    }
-
-    public Student create(Student student) {
-        House house = student.getHouse();
-        if (house != null) {
-            if (house.getId() != null) {
-                house = houseService.get(house.getId());
-            }
-        }
-        student.setHouse(house);
-        return studentRepository.save(student);
+        super(studentRepository, houseService);
     }
 
     public Student update(Student student, Long id) {
-        var studentToUpdate = studentRepository.findById(id);
+        var studentToUpdate = repository.findById(id);
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
             if (student.getHouse() == null) {
@@ -55,13 +29,13 @@ public class StudentService {
             updatedStudent.setGraduationYear(student.getGraduationYear());
             updatedStudent.setGraduated(student.isGraduated());
             updatedStudent.setPrefect(student.isPrefect());
-            return studentRepository.save(updatedStudent);
+            return repository.save(updatedStudent);
         }
         return null;
     }
 
     public Student patch(Student student, Long id) {
-        var studentToUpdate = studentRepository.findById(id);
+        var studentToUpdate = repository.findById(id);
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
             if (student.getHouse() != null) {
@@ -91,14 +65,8 @@ public class StudentService {
             updatedStudent.setGraduated(student.isGraduated());
             updatedStudent.setPrefect(student.isPrefect());
 
-            return studentRepository.save(updatedStudent);
+            return repository.save(updatedStudent);
         }
         return null;
-    }
-
-    public void delete(Long id) {
-        if (id != null) {
-            studentRepository.deleteById(id);
-        }
     }
 }

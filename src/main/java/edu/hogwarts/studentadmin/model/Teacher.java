@@ -1,11 +1,13 @@
 package edu.hogwarts.studentadmin.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 import java.time.LocalDate;
 
 @Entity(name = "teacher")
-public class Teacher extends HogwartsPerson{
+public class Teacher extends HogwartsPerson {
     private boolean headOfHouse;
 
     @Enumerated(EnumType.STRING)

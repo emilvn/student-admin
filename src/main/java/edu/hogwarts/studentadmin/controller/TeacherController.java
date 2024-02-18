@@ -2,71 +2,16 @@ package edu.hogwarts.studentadmin.controller;
 
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.service.TeacherService;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/teachers")
 @CrossOrigin
-public class TeacherController {
-    private final TeacherService teacherService;
-
+public class TeacherController extends HogwartsPersonController<Teacher, TeacherService> {
     public TeacherController(TeacherService teacherService) {
-        this.teacherService = teacherService;
-    }
-
-    @GetMapping
-    public ResponseEntity<List<Teacher>> getAll() {
-        var teachers = teacherService.getAll();
-        if (teachers.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(teachers);
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<Teacher> get(@PathVariable("id") Long id) {
-        var teacher = teacherService.get(id);
-        if (teacher == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(teacher);
-    }
-
-    @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Teacher teacher) {
-        return ResponseEntity.ok(teacherService.create(teacher));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Teacher> update(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
-        var updatedTeacher = teacherService.update(teacher, id);
-        if (updatedTeacher == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedTeacher);
-    }
-
-    @PatchMapping("/{id}")
-    public ResponseEntity<Teacher> patch(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
-        var updatedTeacher = teacherService.patch(teacher, id);
-        if (updatedTeacher == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updatedTeacher);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Teacher> delete(@PathVariable("id") Long id) {
-        var teacher = teacherService.get(id);
-        if (teacher == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        teacherService.delete(id);
-        return ResponseEntity.ok(teacher);
+        super(teacherService);
     }
 
 }

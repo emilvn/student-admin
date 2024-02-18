@@ -1,43 +1,18 @@
 package edu.hogwarts.studentadmin.service;
 
-import edu.hogwarts.studentadmin.model.House;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class TeacherService {
-    private final TeacherRepository teacherRepository;
-    private final HouseService houseService;
+public class TeacherService extends HogwartsPersonService<Teacher> {
 
-    public TeacherService(TeacherRepository teacherRepository, HouseService houseService) {
-        this.teacherRepository = teacherRepository;
-        this.houseService = houseService;
-    }
-
-    public List<Teacher> getAll() {
-        return teacherRepository.findAll();
-    }
-
-    public Teacher get(Long id) {
-        return teacherRepository.findById(id).orElse(null);
-    }
-
-    public Teacher create(Teacher teacher) {
-        House house = teacher.getHouse();
-        if (house != null) {
-            if (house.getId() != null) {
-                house = houseService.get(house.getId());
-            }
-        }
-        teacher.setHouse(house);
-        return teacherRepository.save(teacher);
+    public TeacherService(TeacherRepository repository, HouseService houseService) {
+        super(repository, houseService);
     }
 
     public Teacher update(Teacher teacher, Long id) {
-        var teacherToUpdate = teacherRepository.findById(id);
+        var teacherToUpdate = repository.findById(id);
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
             if (teacher.getHouse() == null) {
@@ -55,13 +30,13 @@ public class TeacherService {
             updatedTeacher.setEmploymentStart(teacher.getEmploymentStart());
             updatedTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
             updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
-            return teacherRepository.save(updatedTeacher);
+            return repository.save(updatedTeacher);
         }
         return null;
     }
 
     public Teacher patch(Teacher teacher, Long id) {
-        var teacherToUpdate = teacherRepository.findById(id);
+        var teacherToUpdate = repository.findById(id);
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
             if (teacher.getHouse() != null) {
@@ -93,14 +68,8 @@ public class TeacherService {
             }
             updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
 
-            return teacherRepository.save(updatedTeacher);
+            return repository.save(updatedTeacher);
         }
         return null;
-    }
-
-    public void delete(Long id) {
-        if (id != null) {
-            teacherRepository.deleteById(id);
-        }
     }
 }

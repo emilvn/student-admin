@@ -1,11 +1,11 @@
 package edu.hogwarts.studentadmin.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
 
 import java.time.LocalDate;
 
 @Entity(name = "student")
-public class Student extends HogwartsPerson{
+public class Student extends HogwartsPerson {
     private boolean prefect;
     private int enrollmentYear;
     private int graduationYear;
