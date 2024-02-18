@@ -1,6 +1,7 @@
 package edu.hogwarts.studentadmin.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -123,6 +124,11 @@ public class Teacher {
     public int getAge() {
         if (dateOfBirth == null) return 0;
         return Period.between(dateOfBirth, LocalDate.now().withYear(1992)).getYears();
+    }
+
+    @JsonGetter("fullName")
+    public String getFullName() {
+        return firstName + " " + middleName + " " + lastName;
     }
 
     @Override

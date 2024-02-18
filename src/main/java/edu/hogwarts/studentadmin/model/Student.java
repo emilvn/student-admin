@@ -124,6 +124,11 @@ public class Student {
         return Period.between(dateOfBirth, LocalDate.now().withYear(1992)).getYears();
     }
 
+    @JsonGetter("fullName")
+    public String getFullName() {
+        return firstName + " " + middleName + " " + lastName;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
