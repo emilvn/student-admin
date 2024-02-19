@@ -123,11 +123,21 @@ public class CourseController {
             if (!studentsExist) {
                 return ResponseEntity.badRequest().body("Invalid student id(s).");
             }
+            for(var student : students) {
+                if(studentService.get(student.getId()).getSchoolYear() != courseService.get(id).getSchoolYear()) {
+                    return ResponseEntity.badRequest().body("Invalid school year.");
+                }
+            }
             updatedCourse = courseService.addStudentsById(id, students);
         } else {
             var studentsExist = students.stream().allMatch(student -> studentService.get(student.getName()) != null);
             if (!studentsExist) {
                 return ResponseEntity.badRequest().body("Invalid student name(s).");
+            }
+            for(var student : students) {
+                if(studentService.get(student.getName()).getSchoolYear() != courseService.get(id).getSchoolYear()) {
+                    return ResponseEntity.badRequest().body("Invalid school year.");
+                }
             }
             updatedCourse = courseService.addStudentsByName(id, students);
         }
