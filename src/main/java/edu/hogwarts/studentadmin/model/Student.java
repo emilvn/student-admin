@@ -1,8 +1,13 @@
 package edu.hogwarts.studentadmin.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "student")
 public class Student extends HogwartsPerson {
@@ -10,6 +15,7 @@ public class Student extends HogwartsPerson {
     private int enrollmentYear;
     private int graduationYear;
     private boolean graduated;
+    private @ManyToMany(mappedBy = "students") List<Course> courses = new ArrayList<>();
 
     public Student() {
 
@@ -26,6 +32,23 @@ public class Student extends HogwartsPerson {
         this.enrollmentYear = enrollmentYear;
         this.graduationYear = graduationYear;
         this.graduated = graduated;
+    }
+
+    @PreRemove
+    public void removeStudentFromCourse() {
+        for (Course course : courses) {
+            course.removeStudent(this);
+        }
+    }
+
+    @JsonIgnore
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    @JsonIgnore
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     public boolean isPrefect() {

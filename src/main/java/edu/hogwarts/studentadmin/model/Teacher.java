@@ -1,10 +1,11 @@
 package edu.hogwarts.studentadmin.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "teacher")
 public class Teacher extends HogwartsPerson {
@@ -14,6 +15,9 @@ public class Teacher extends HogwartsPerson {
     private EmpType employment;
     private LocalDate employmentStart;
     private LocalDate employmentEnd;
+
+    @OneToMany(mappedBy = "teacher")
+    private List<Course> courses = new ArrayList<>();
 
     public Teacher() {
     }
@@ -29,6 +33,23 @@ public class Teacher extends HogwartsPerson {
         this.employment = employment;
         this.employmentStart = employmentStart;
         this.employmentEnd = employmentEnd;
+    }
+
+    @PreRemove
+    private void removeTeacherFromCourse() {
+        for(Course course : courses) {
+            course.setTeacher(null);
+        }
+    }
+
+    @JsonIgnore
+    public List<Course> getCourses() {
+        return courses;
+    }
+
+    @JsonIgnore
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 
     public boolean isHeadOfHouse() {

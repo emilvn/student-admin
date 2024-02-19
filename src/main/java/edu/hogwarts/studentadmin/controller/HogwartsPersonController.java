@@ -62,6 +62,6 @@ public abstract class HogwartsPersonController<M extends HogwartsPerson, S exten
             return ResponseEntity.notFound().build();
         }
         service.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(person);
     }
 }

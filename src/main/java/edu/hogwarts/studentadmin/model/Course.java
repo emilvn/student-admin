@@ -14,7 +14,8 @@ public class Course {
     private int schoolYear;
     private boolean current;
     private @ManyToOne(fetch = FetchType.EAGER) Teacher teacher;
-    private @ManyToMany(fetch = FetchType.EAGER) List<Student> students = new ArrayList<>();
+    private @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE})
+    List<Student> students = new ArrayList<>();
 
     public Course() {
     }
@@ -26,6 +27,10 @@ public class Course {
         this.current = current;
         this.teacher = teacher;
         this.students = students;
+    }
+
+    public void removeStudent(Student student) {
+        students.remove(student);
     }
 
     public String getSubject() {
