@@ -13,17 +13,17 @@ public class House {
 
     private String founder;
 
-    private String color1;
-    private String color2;
+    private String primaryColor;
+    private String secondaryColor;
 
     public House() {
     }
 
-    public House(String name, String founder, String color1, String color2) {
+    public House(String name, String founder, String primaryColor, String secondaryColor) {
         this.name = name;
         this.founder = founder;
-        this.color1 = color1;
-        this.color2 = color2;
+        this.primaryColor = primaryColor;
+        this.secondaryColor = secondaryColor;
     }
 
     public String getName() {
@@ -43,32 +43,32 @@ public class House {
     }
 
     public List<String> getColors() {
-        return List.of(color1, color2);
+        return List.of(primaryColor, secondaryColor);
     }
 
     public void setColors(List<String> colors) {
-        this.color1 = colors.get(0);
-        this.color2 = colors.get(1);
+        this.primaryColor = colors.get(0);
+        this.secondaryColor = colors.get(1);
     }
 
     @JsonIgnore
-    public String getColor1() {
-        return color1;
+    public String getPrimaryColor() {
+        return primaryColor;
     }
 
     @JsonIgnore
-    public void setColor1(String color1) {
-        this.color1 = color1;
+    public void setPrimaryColor(String color1) {
+        this.primaryColor = color1;
     }
 
     @JsonIgnore
-    public String getColor2() {
-        return color2;
+    public String getSecondaryColor() {
+        return secondaryColor;
     }
 
     @JsonIgnore
-    public void setColor2(String color2) {
-        this.color2 = color2;
+    public void setSecondaryColor(String color2) {
+        this.secondaryColor = color2;
     }
 
     @Override

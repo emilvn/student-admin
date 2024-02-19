@@ -27,8 +27,8 @@ public class StudentServiceTest {
 
     @BeforeEach
     void setUp() {
-        var gryffindor = new House("Gryffindor", "Godric Gryffindor", new ArrayList<>(List.of("Red", "Gold")));
-        var hufflepuff = new House("Hufflepuff", "Helga Hufflepuff", new ArrayList<>(List.of("Yellow", "Black")));
+        var gryffindor = new House("Gryffindor", "Godric Gryffindor", "Red", "Gold");
+        var hufflepuff = new House("Hufflepuff", "Helga Hufflepuff", "Yellow", "Black");
 
         when(houseService.get("Gryffindor")).thenReturn(gryffindor);
         when(houseService.get("Hufflepuff")).thenReturn(hufflepuff);
