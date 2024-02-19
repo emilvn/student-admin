@@ -20,6 +20,7 @@ public abstract class HogwartsPerson {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "house")
     protected House house;
 
     @Transient
@@ -40,7 +41,6 @@ public abstract class HogwartsPerson {
         return middleName;
     }
 
-    @JsonIgnore
     public void setMiddleName(String middleName) {
         this.middleName = middleName;
     }
@@ -50,13 +50,12 @@ public abstract class HogwartsPerson {
         return lastName;
     }
 
-    @JsonIgnore
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    @JsonGetter("fullName")
-    public String getFullName() {
+    @JsonGetter("name")
+    public String getName() {
         String fullName = firstName;
 
         if (middleName != null) {
@@ -68,8 +67,8 @@ public abstract class HogwartsPerson {
         return fullName;
     }
 
-    @JsonSetter("fullName")
-    public void setFullName(String fullName) {
+    @JsonSetter("name")
+    public void setName(String fullName) {
         int firstSpace = fullName.indexOf(' ');
         int lastSpace = fullName.lastIndexOf(' ');
 

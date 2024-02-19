@@ -47,7 +47,7 @@ public class StudentServiceTest {
     @Test
     void updateStudentTest() {
         var student = new Student();
-        student.setFullName("Test put");
+        student.setName("Test put");
         var updatedStudent = studentService.update(student, 1L);
 
         // Test that all properties are overwritten
@@ -68,7 +68,7 @@ public class StudentServiceTest {
     @Test
     void patchStudentTest() {
         var student = new Student();
-        student.setFullName("Test patch");
+        student.setName("Test patch");
         var updatedStudent = studentService.patch(student, 1L);
 
         // Test that only first name is updated

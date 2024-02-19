@@ -16,7 +16,7 @@ public class StudentService extends HogwartsPersonService<Student> {
             var updatedStudent = studentToUpdate.get();
             var house = houseService.get(student.getHouseName());
             updatedStudent.setHouse(house);
-            updatedStudent.setFullName(student.getFullName());
+            updatedStudent.setName(student.getName());
             updatedStudent.setDateOfBirth(student.getDateOfBirth());
             updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
             updatedStudent.setGraduationYear(student.getGraduationYear());
@@ -35,8 +35,8 @@ public class StudentService extends HogwartsPersonService<Student> {
                 var house = houseService.get(student.getHouseName());
                 updatedStudent.setHouse(house);
             }
-            if (student.getFullName() != null) {
-                updatedStudent.setFullName(student.getFullName());
+            if (student.getName() != null) {
+                updatedStudent.setName(student.getName());
             }
             if (student.getDateOfBirth() != null) {
                 updatedStudent.setDateOfBirth(student.getDateOfBirth());

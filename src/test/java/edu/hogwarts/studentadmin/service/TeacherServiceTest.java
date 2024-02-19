@@ -38,16 +38,16 @@ public class TeacherServiceTest {
     @Test
     void createTeacherTest() {
         var teacher = new Teacher();
-        teacher.setFullName("Test create");
+        teacher.setName("Test create");
         Teacher addedTeacher = teacherService.create(teacher);
 
-        assertEquals("Test create", addedTeacher.getFullName());
+        assertEquals("Test create", addedTeacher.getName());
     }
 
     @Test
     void updateTeacherTest() {
         var teacher = new Teacher();
-        teacher.setFullName("Test put");
+        teacher.setName("Test put");
         Teacher updatedTeacher = teacherService.update(teacher, 1L);
 
         assertEquals("Test", updatedTeacher.getFirstName(), "First name should be overridden");
@@ -65,7 +65,7 @@ public class TeacherServiceTest {
     @Test
     void patchTeacherTest() {
         var teacher = new Teacher();
-        teacher.setFullName("Test patch");
+        teacher.setName("Test patch");
         var updatedTeacher = teacherService.patch(teacher, 1L);
 
         assertEquals("Test", updatedTeacher.getFirstName());
