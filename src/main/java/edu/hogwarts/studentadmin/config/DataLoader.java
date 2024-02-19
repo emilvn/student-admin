@@ -11,7 +11,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @Component
@@ -36,26 +35,10 @@ public class DataLoader implements CommandLineRunner {
     }
 
     private void createHouses() {
-        var gryffindorColors = new ArrayList<String>();
-        gryffindorColors.add("Scarlet");
-        gryffindorColors.add("Gold");
-
-        var hufflepuffColors = new ArrayList<String>();
-        hufflepuffColors.add("Yellow");
-        hufflepuffColors.add("Black");
-
-        var ravenclawColors = new ArrayList<String>();
-        ravenclawColors.add("Blue");
-        ravenclawColors.add("Bronze");
-
-        var slytherinColors = new ArrayList<String>();
-        slytherinColors.add("Green");
-        slytherinColors.add("Silver");
-
-        var gryffindor = new House("Gryffindor", "Godric Gryffindor", gryffindorColors);
-        var hufflepuff = new House("Hufflepuff", "Helga Hufflepuff", hufflepuffColors);
-        var ravenclaw = new House("Ravenclaw", "Rowena Ravenclaw", ravenclawColors);
-        var slytherin = new House("Slytherin", "Salazar Slytherin", slytherinColors);
+        var gryffindor = new House("Gryffindor", "Godric Gryffindor", "scarlet", "gold");
+        var hufflepuff = new House("Hufflepuff", "Helga Hufflepuff", "yellow", "black");
+        var ravenclaw = new House("Ravenclaw", "Rowena Ravenclaw", "blue", "silver");
+        var slytherin = new House("Slytherin", "Salazar Slytherin", "green", "silver");
 
 
         houseRepository.save(gryffindor);
