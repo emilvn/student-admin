@@ -1,6 +1,7 @@
 package edu.hogwarts.studentadmin.service;
 
 import edu.hogwarts.studentadmin.model.Course;
+import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.CourseRepository;
 import org.springframework.stereotype.Service;
@@ -115,19 +116,41 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    public Course addStudent(Long id, Long studentId) {
+    public Course addStudentsByName(Long id, List<Student> students) {
         var course = get(id);
         if (course == null) {
             return null;
         }
-        var student = studentService.get(studentId);
-        if (student == null) {
+        if (course.getStudents() == null) {
+            course.setStudents(new ArrayList<>());
+        }
+        var studentsToAdd = students.stream()
+                .map(student -> studentService.get(student.getName()))
+                .toList();
+        for (var student : studentsToAdd) {
+            if (!course.getStudents().contains(student)) {
+                course.getStudents().add(student);
+            }
+        }
+        return courseRepository.save(course);
+    }
+
+    public Course addStudentsById(Long id, List<Student> students) {
+        var course = get(id);
+        if (course == null) {
             return null;
         }
-        if (course.getStudents().stream().anyMatch(s -> s.getId().equals(studentId))) {
-            return course;
+        if (course.getStudents() == null) {
+            course.setStudents(new ArrayList<>());
         }
-        course.getStudents().add(student);
+        var studentsToAdd = students.stream()
+                .map(student -> studentService.get(student.getId()))
+                .toList();
+        for (var student : studentsToAdd) {
+            if (!course.getStudents().contains(student)) {
+                course.getStudents().add(student);
+            }
+        }
         return courseRepository.save(course);
     }
 

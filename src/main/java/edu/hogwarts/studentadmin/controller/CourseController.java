@@ -110,17 +110,30 @@ public class CourseController {
         return ResponseEntity.ok(updatedCourse);
     }
 
-    @PutMapping("/{id}/students/{studentId}")
-    public ResponseEntity<Object> addStudent(@PathVariable("id") Long id, @PathVariable("studentId") Long studentId) {
-        var courseToUpdate = courseService.get(id);
-        var student = studentService.get(studentId);
-        if (courseToUpdate == null) {
+    @PostMapping("/{id}/students")
+    public ResponseEntity<Object> addStudents(@PathVariable("id") Long id, @RequestBody List<Student> students) {
+        Course updatedCourse;
+        var useIds = students.stream().allMatch(student -> student.getId() != null);
+        var useNames = students.stream().allMatch(student -> student.getName() != null);
+        if (!useIds && !useNames) {
+            return ResponseEntity.badRequest().body("Invalid request. Must be either student ids or names.");
+        }
+        if (useIds) {
+            var studentsExist = students.stream().allMatch(student -> studentService.get(student.getId()) != null);
+            if (!studentsExist) {
+                return ResponseEntity.badRequest().body("Invalid student id(s).");
+            }
+            updatedCourse = courseService.addStudentsById(id, students);
+        } else {
+            var studentsExist = students.stream().allMatch(student -> studentService.get(student.getName()) != null);
+            if (!studentsExist) {
+                return ResponseEntity.badRequest().body("Invalid student name(s).");
+            }
+            updatedCourse = courseService.addStudentsByName(id, students);
+        }
+        if (updatedCourse == null) {
             return ResponseEntity.notFound().build();
         }
-        if (student == null) {
-            return ResponseEntity.badRequest().body("Invalid student id.");
-        }
-        var updatedCourse = courseService.addStudent(id, studentId);
         return ResponseEntity.ok(updatedCourse);
     }
 

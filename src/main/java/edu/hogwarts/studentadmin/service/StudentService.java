@@ -10,6 +10,10 @@ public class StudentService extends HogwartsPersonService<Student> {
         super(studentRepository, houseService);
     }
 
+    public Student get(String name) {
+        return ((StudentRepository) repository).findByFullName(name).orElse(null);
+    }
+
     public Student update(Student student, Long id) {
         var studentToUpdate = repository.findById(id);
         if (studentToUpdate.isPresent()) {
@@ -50,10 +54,10 @@ public class StudentService extends HogwartsPersonService<Student> {
             if (student.isGraduated() != null) {
                 updatedStudent.setGraduated(student.isGraduated());
             }
-            if (student.getSchoolYear() != null){
+            if (student.getSchoolYear() != null) {
                 updatedStudent.setSchoolYear(student.getSchoolYear());
             }
-            if(student.isPrefect() != null){
+            if (student.isPrefect() != null) {
                 updatedStudent.setPrefect(student.isPrefect());
             }
 
