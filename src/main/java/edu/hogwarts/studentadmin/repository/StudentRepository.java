@@ -1,12 +1,16 @@
 package edu.hogwarts.studentadmin.repository;
 
 import edu.hogwarts.studentadmin.model.Student;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
 public interface StudentRepository extends HogwartsPersonRepository<Student> {
-    @Query("SELECT s FROM student s WHERE CONCAT(LOWER(s.firstName), ' ', COALESCE(LOWER(s.middleName), ''), ' ', COALESCE(LOWER(s.lastName), '')) = LOWER(:fullName)")
-    Optional<Student> findByFullName(@Param("fullName") String fullName);
+
+    Optional<Student> findFirstByFirstNameIgnoreCase(String firstName);
+    Optional<Student> findFirstByMiddleNameIgnoreCase(String middleName);
+    Optional<Student> findFirstByLastNameIgnoreCase(String lastName);
+
+    Optional<Student> findFirstByFirstNameIgnoreCaseAndLastNameIgnoreCase(String firstName, String lastName);
+
+    Optional<Student> findFirstByFirstNameIgnoreCaseAndMiddleNameIgnoreCaseAndLastNameIgnoreCase(String firstName, String middleName, String lastName);
 }

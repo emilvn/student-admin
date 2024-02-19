@@ -58,7 +58,7 @@ public abstract class HogwartsPerson {
     public String getName() {
         String fullName = firstName;
 
-        if (middleName != null) {
+        if (middleName != null && !middleName.isBlank()) {
             fullName += " " + middleName;
         }
         if (lastName != null) {
