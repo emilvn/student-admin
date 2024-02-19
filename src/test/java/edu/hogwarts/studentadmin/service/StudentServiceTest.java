@@ -55,10 +55,10 @@ public class StudentServiceTest {
         assertEquals("put", updatedStudent.getLastName(), "Last name should be overridden");
         assertNull(updatedStudent.getMiddleName(), "Middle name should be overridden");
         assertNull(updatedStudent.getDateOfBirth(), "Date of birth should be overridden");
-        assertEquals(0, updatedStudent.getEnrollmentYear(), "Enrollment year should be overridden");
-        assertEquals(0, updatedStudent.getGraduationYear(), "Graduation year should be overridden");
-        assertFalse(updatedStudent.isGraduated(), "Graduated should be overridden");
-        assertFalse(updatedStudent.isPrefect(), "Prefect should be overridden");
+        assertNull(updatedStudent.getEnrollmentYear(), "Enrollment year should be overridden");
+        assertNull(updatedStudent.getGraduationYear(), "Graduation year should be overridden");
+        assertNull(updatedStudent.isGraduated(), "Graduated should be overridden");
+        assertNull(updatedStudent.isPrefect(), "Prefect should be overridden");
         assertNull(updatedStudent.getHouse(), "House should be overridden");
 
         updatedStudent = studentService.update(student, -2L);

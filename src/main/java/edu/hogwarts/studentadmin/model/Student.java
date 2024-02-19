@@ -75,6 +75,9 @@ public class Student extends HogwartsPerson {
     }
 
     public void setGraduationYear(Integer graduationYear) {
+        if(graduationYear != null){
+            setGraduated(true);
+        }
         this.graduationYear = graduationYear;
     }
 
