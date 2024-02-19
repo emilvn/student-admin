@@ -3,5 +3,7 @@ package edu.hogwarts.studentadmin.repository;
 import edu.hogwarts.studentadmin.model.House;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface HouseRepository extends JpaRepository<House, Long> {
+import java.util.Optional;
+
+public interface HouseRepository extends JpaRepository<House, String> {
 }

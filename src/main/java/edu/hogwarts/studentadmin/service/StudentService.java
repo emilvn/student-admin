@@ -14,13 +14,8 @@ public class StudentService extends HogwartsPersonService<Student> {
         var studentToUpdate = repository.findById(id);
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
-            if (student.getHouse() == null) {
-                updatedStudent.setHouse(null);
-            } else if (student.getHouse().getId() == null) {
-                updatedStudent.setHouse(null);
-            } else {
-                updatedStudent.setHouse(student.getHouse());
-            }
+            var house = houseService.get(student.getHouseName());
+            updatedStudent.setHouse(house);
             updatedStudent.setFullName(student.getFullName());
             updatedStudent.setDateOfBirth(student.getDateOfBirth());
             updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
@@ -36,11 +31,9 @@ public class StudentService extends HogwartsPersonService<Student> {
         var studentToUpdate = repository.findById(id);
         if (studentToUpdate.isPresent()) {
             var updatedStudent = studentToUpdate.get();
-            if (student.getHouse() != null) {
-                var house = houseService.get(student.getHouse().getId());
-                if (house != null) {
-                    updatedStudent.setHouse(house);
-                }
+            if (student.getHouseName() != null) {
+                var house = houseService.get(student.getHouseName());
+                updatedStudent.setHouse(house);
             }
             if (student.getFullName() != null) {
                 updatedStudent.setFullName(student.getFullName());

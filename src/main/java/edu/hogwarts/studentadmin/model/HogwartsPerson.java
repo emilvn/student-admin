@@ -17,7 +17,13 @@ public abstract class HogwartsPerson {
     protected String middleName;
     protected String lastName;
     protected LocalDate dateOfBirth;
-    protected @ManyToOne(fetch = FetchType.EAGER) House house;
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.EAGER)
+    protected House house;
+
+    @Transient
+    protected String houseName;
 
     @JsonIgnore
     public String getFirstName() {
@@ -97,12 +103,30 @@ public abstract class HogwartsPerson {
         return Period.between(dateOfBirth, LocalDate.now().withYear(1992)).getYears();
     }
 
+    @JsonIgnore
     public House getHouse() {
         return house;
     }
 
     public void setHouse(House house) {
         this.house = house;
+    }
+
+    @JsonGetter("house")
+    public String getHouseJson(){
+        if(house == null) return null;
+        return house.getName();
+    }
+
+    public String getHouseName(){
+        return houseName;
+    }
+
+    @JsonSetter("house")
+    public void setHouseName(String houseName){
+        char firstLetter = Character.toUpperCase(houseName.charAt(0));
+        houseName = firstLetter + houseName.substring(1).toLowerCase();
+        this.houseName = houseName;
     }
 
     public Long getId() {

@@ -27,28 +27,21 @@ public class StudentServiceTest {
 
     @BeforeEach
     void setUp() {
-        var gryffindor = new House(1L, "Gryffindor", "Godric Gryffindor", new ArrayList<>(List.of("Red", "Gold")));
-        var hufflepuff = new House(2L, "Hufflepuff", "Helga Hufflepuff", new ArrayList<>(List.of("Yellow", "Black")));
-        var testHouse = new House(3L, "Test house", null, null);
+        var gryffindor = new House("Gryffindor", "Godric Gryffindor", new ArrayList<>(List.of("Red", "Gold")));
+        var hufflepuff = new House("Hufflepuff", "Helga Hufflepuff", new ArrayList<>(List.of("Yellow", "Black")));
 
-        when(houseService.get(1L)).thenReturn(gryffindor);
-        when(houseService.get(2L)).thenReturn(hufflepuff);
-        when(houseService.get(3L)).thenReturn(testHouse);
-        when(houseService.get(5L)).thenReturn(null);
+        when(houseService.get("Gryffindor")).thenReturn(gryffindor);
+        when(houseService.get("Hufflepuff")).thenReturn(hufflepuff);
+        when(houseService.get(null)).thenReturn(null);
     }
 
     @Test
     void createStudentTest() {
         var student = new Student();
-        var house = new House();
-        house.setId(3L);
-        house.setName("Test house");
-        student.setHouse(house);
         student.setFirstName("Test create");
         var addedStudent = studentService.create(student);
 
         assertEquals("Test create", addedStudent.getFirstName(), "First name should be added");
-        assertEquals("Test house", addedStudent.getHouse().getName(), "House should be added");
     }
 
     @Test

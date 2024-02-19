@@ -8,9 +8,6 @@ import java.util.List;
 public class House {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     private String name;
 
     private String founder;
@@ -21,8 +18,7 @@ public class House {
     public House() {
     }
 
-    public House(Long id, String name, String founder, List<String> colors) {
-        this.id = id;
+    public House(String name, String founder, List<String> colors) {
         this.name = name;
         this.founder = founder;
         this.colors = colors;
@@ -52,16 +48,12 @@ public class House {
         this.colors = colors;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Override
     public String toString() {
-        return name;
+        return "{" +
+                "name='" + name + '\'' +
+                ", founder='" + founder + '\'' +
+                ", colors=" + colors +
+                "}";
     }
 }
