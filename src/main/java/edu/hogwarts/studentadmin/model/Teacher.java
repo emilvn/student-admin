@@ -37,7 +37,7 @@ public class Teacher extends HogwartsPerson {
 
     @PreRemove
     private void removeTeacherFromCourse() {
-        for(Course course : courses) {
+        for (Course course : courses) {
             course.setTeacher(null);
         }
     }

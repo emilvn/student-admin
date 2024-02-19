@@ -19,7 +19,7 @@ public class HouseService {
     }
 
     public House get(String name) {
-        if(name == null || name.isBlank())
+        if (name == null || name.isBlank())
             return null;
         return this.houseRepository.findById(name).orElse(null);
     }

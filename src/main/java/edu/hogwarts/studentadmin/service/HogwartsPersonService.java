@@ -1,7 +1,6 @@
 package edu.hogwarts.studentadmin.service;
 
 import edu.hogwarts.studentadmin.model.HogwartsPerson;
-import edu.hogwarts.studentadmin.model.House;
 import edu.hogwarts.studentadmin.repository.HogwartsPersonRepository;
 
 import java.util.List;

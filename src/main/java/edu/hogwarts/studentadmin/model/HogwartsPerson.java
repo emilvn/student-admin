@@ -62,7 +62,7 @@ public abstract class HogwartsPerson {
         if (middleName != null) {
             fullName += " " + middleName;
         }
-        if(lastName != null) {
+        if (lastName != null) {
             fullName += " " + lastName;
         }
         return fullName;
@@ -73,12 +73,11 @@ public abstract class HogwartsPerson {
         int firstSpace = fullName.indexOf(' ');
         int lastSpace = fullName.lastIndexOf(' ');
 
-        if(firstSpace == -1) {
+        if (firstSpace == -1) {
             setFirstName(fullName);
             setMiddleName(null);
             setLastName(null);
-        }
-        else if (firstSpace == lastSpace) {
+        } else if (firstSpace == lastSpace) {
             setFirstName(fullName.substring(0, firstSpace));
             setMiddleName(null);
             setLastName(fullName.substring(firstSpace + 1));
@@ -113,17 +112,17 @@ public abstract class HogwartsPerson {
     }
 
     @JsonGetter("house")
-    public String getHouseJson(){
-        if(house == null) return null;
+    public String getHouseJson() {
+        if (house == null) return null;
         return house.getName();
     }
 
-    public String getHouseName(){
+    public String getHouseName() {
         return houseName;
     }
 
     @JsonSetter("house")
-    public void setHouseName(String houseName){
+    public void setHouseName(String houseName) {
         char firstLetter = Character.toUpperCase(houseName.charAt(0));
         houseName = firstLetter + houseName.substring(1).toLowerCase();
         this.houseName = houseName;

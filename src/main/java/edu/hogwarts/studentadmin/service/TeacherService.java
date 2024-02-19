@@ -32,7 +32,7 @@ public class TeacherService extends HogwartsPersonService<Teacher> {
         var teacherToUpdate = repository.findById(id);
         if (teacherToUpdate.isPresent()) {
             var updatedTeacher = teacherToUpdate.get();
-            if(teacher.getHouseName() != null){
+            if (teacher.getHouseName() != null) {
                 var house = houseService.get(teacher.getHouseName());
                 updatedTeacher.setHouse(house);
             }
