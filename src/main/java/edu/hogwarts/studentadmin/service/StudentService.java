@@ -41,14 +41,21 @@ public class StudentService extends HogwartsPersonService<Student> {
             if (student.getDateOfBirth() != null) {
                 updatedStudent.setDateOfBirth(student.getDateOfBirth());
             }
-            if (student.getEnrollmentYear() != 0) {
+            if (student.getEnrollmentYear() != null) {
                 updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
             }
-            if (student.getGraduationYear() != 0) {
+            if (student.getGraduationYear() != null) {
                 updatedStudent.setGraduationYear(student.getGraduationYear());
             }
-            updatedStudent.setGraduated(student.isGraduated());
-            updatedStudent.setPrefect(student.isPrefect());
+            if (student.isGraduated() != null) {
+                updatedStudent.setGraduated(student.isGraduated());
+            }
+            if (student.getSchoolYear() != null){
+                updatedStudent.setSchoolYear(student.getSchoolYear());
+            }
+            if(student.isPrefect() != null){
+                updatedStudent.setPrefect(student.isPrefect());
+            }
 
             return repository.save(updatedStudent);
         }

@@ -11,17 +11,20 @@ import java.util.List;
 
 @Entity(name = "student")
 public class Student extends HogwartsPerson {
-    private boolean prefect;
-    private int enrollmentYear;
-    private int graduationYear;
-    private boolean graduated;
+    private Boolean prefect;
+    private Integer enrollmentYear;
+    private Integer graduationYear;
+    private Boolean graduated;
+
+    private Integer schoolYear;
     private @ManyToMany(mappedBy = "students") List<Course> courses = new ArrayList<>();
 
     public Student() {
 
     }
 
-    public Student(Long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, int enrollmentYear, int graduationYear, boolean graduated) {
+    public Student(Long id, String firstName, String middleName, String lastName, LocalDate dateOfBirth, House house, boolean prefect, Integer enrollmentYear, Integer graduationYear, Boolean graduated, Integer schoolYear) {
+        this.schoolYear = schoolYear;
         this.id = id;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -51,36 +54,44 @@ public class Student extends HogwartsPerson {
         this.courses = courses;
     }
 
-    public boolean isPrefect() {
+    public Boolean isPrefect() {
         return prefect;
     }
 
-    public void setPrefect(boolean prefect) {
+    public void setPrefect(Boolean prefect) {
         this.prefect = prefect;
     }
 
-    public int getEnrollmentYear() {
+    public Integer getEnrollmentYear() {
         return enrollmentYear;
     }
 
-    public void setEnrollmentYear(int enrollmentYear) {
+    public void setEnrollmentYear(Integer enrollmentYear) {
         this.enrollmentYear = enrollmentYear;
     }
 
-    public int getGraduationYear() {
+    public Integer getGraduationYear() {
         return graduationYear;
     }
 
-    public void setGraduationYear(int graduationYear) {
+    public void setGraduationYear(Integer graduationYear) {
         this.graduationYear = graduationYear;
     }
 
-    public boolean isGraduated() {
+    public Boolean isGraduated() {
         return graduated;
     }
 
-    public void setGraduated(boolean graduated) {
+    public void setGraduated(Boolean graduated) {
         this.graduated = graduated;
+    }
+
+    public Integer getSchoolYear() {
+        return schoolYear;
+    }
+
+    public void setSchoolYear(Integer schoolYear) {
+        this.schoolYear = schoolYear;
     }
 
     @Override
@@ -92,6 +103,7 @@ public class Student extends HogwartsPerson {
                 ", dateOfBirth=" + dateOfBirth +
                 ", house=" + house +
                 ", prefect=" + prefect +
+                ", schoolYear=" + schoolYear +
                 ", enrollmentYear=" + enrollmentYear +
                 ", graduationYear=" + graduationYear +
                 ", graduated=" + graduated +

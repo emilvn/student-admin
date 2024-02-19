@@ -51,7 +51,9 @@ public class TeacherService extends HogwartsPersonService<Teacher> {
             if (teacher.getEmploymentEnd() != null) {
                 updatedTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
             }
-            updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
+            if (teacher.isHeadOfHouse() != null) {
+                updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
+            }
 
             return repository.save(updatedTeacher);
         }

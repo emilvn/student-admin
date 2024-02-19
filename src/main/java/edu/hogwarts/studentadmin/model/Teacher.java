@@ -9,7 +9,7 @@ import java.util.List;
 
 @Entity(name = "teacher")
 public class Teacher extends HogwartsPerson {
-    private boolean headOfHouse;
+    private Boolean headOfHouse;
 
     @Enumerated(EnumType.STRING)
     private EmpType employment;
@@ -52,11 +52,11 @@ public class Teacher extends HogwartsPerson {
         this.courses = courses;
     }
 
-    public boolean isHeadOfHouse() {
+    public Boolean isHeadOfHouse() {
         return headOfHouse;
     }
 
-    public void setHeadOfHouse(boolean headOfHouse) {
+    public void setHeadOfHouse(Boolean headOfHouse) {
         this.headOfHouse = headOfHouse;
     }
 
