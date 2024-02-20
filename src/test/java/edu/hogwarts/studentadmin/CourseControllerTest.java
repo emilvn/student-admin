@@ -35,7 +35,7 @@ public class CourseControllerTest {
     private StudentService studentService;
 
     @Test
-    public void testAddStudents() throws Exception{
+    public void testStudentSchoolYearMatching() throws Exception{
         var studentCanAdd = new Student();
         studentCanAdd.setSchoolYear(1);
         var studentCannotAdd = new Student();
@@ -55,12 +55,27 @@ public class CourseControllerTest {
         when(courseService.addStudentsById(anyLong(), anyList())).thenReturn(courseEnd);
 
         when(studentService.get(1L)).thenReturn(studentCanAdd);
-        when(studentService.get(2L)).thenReturn(studentCannotAdd);
 
         mockMvc.perform(post("/courses/1/students")
                 .content("[{\"id\": 1}]}")
                 .contentType("application/json"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testStudentSchoolYearNotMatching() throws Exception{
+        var studentCannotAdd = new Student();
+        studentCannotAdd.setSchoolYear(2);
+
+        var course = new Course();
+        course.setId(1L);
+        course.setSchoolYear(1);
+        course.setStudents(new ArrayList<>());
+
+        when(courseService.get(1L)).thenReturn(course);
+        when(courseService.addStudentsById(anyLong(), anyList())).thenReturn(course);
+
+        when(studentService.get(2L)).thenReturn(studentCannotAdd);
 
         mockMvc.perform(post("/courses/1/students")
                 .content("[{\"id\": 2}]")
