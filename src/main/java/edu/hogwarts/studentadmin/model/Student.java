@@ -17,7 +17,8 @@ public class Student extends HogwartsPerson {
     private Boolean graduated;
 
     private Integer schoolYear;
-    private @ManyToMany(mappedBy = "students") List<Course> courses = new ArrayList<>();
+    @ManyToMany(mappedBy = "students")
+    private List<Course> courses = new ArrayList<>();
 
     public Student() {
 

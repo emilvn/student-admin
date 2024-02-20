@@ -13,9 +13,10 @@ public class Course {
     private String subject;
     private int schoolYear;
     private boolean current;
-    private @ManyToOne(fetch = FetchType.EAGER) Teacher teacher;
-    private @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE})
-    List<Student> students = new ArrayList<>();
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Teacher teacher;
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE})
+    private List<Student> students = new ArrayList<>();
 
     public Course() {
     }

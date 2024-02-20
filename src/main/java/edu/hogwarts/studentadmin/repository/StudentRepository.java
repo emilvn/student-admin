@@ -7,7 +7,9 @@ import java.util.Optional;
 public interface StudentRepository extends HogwartsPersonRepository<Student> {
 
     Optional<Student> findFirstByFirstNameIgnoreCase(String firstName);
+
     Optional<Student> findFirstByMiddleNameIgnoreCase(String middleName);
+
     Optional<Student> findFirstByLastNameIgnoreCase(String lastName);
 
     Optional<Student> findFirstByFirstNameIgnoreCaseAndLastNameIgnoreCase(String firstName, String lastName);

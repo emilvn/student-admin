@@ -4,8 +4,6 @@ import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class StudentService extends HogwartsPersonService<Student> {
     public StudentService(StudentRepository studentRepository, HouseService houseService) {
@@ -13,15 +11,14 @@ public class StudentService extends HogwartsPersonService<Student> {
     }
 
     public Student get(String name) {
-        if(name == null || name.isBlank()){
+        if (name == null || name.isBlank()) {
             return null;
         }
         int firstSpace = name.indexOf(" ");
         int lastSpace = name.lastIndexOf(" ");
-        if(firstSpace == -1){
+        if (firstSpace == -1) {
             return ((StudentRepository) repository).findFirstByFirstNameIgnoreCase(name).orElse(null);
-        }
-        else if(firstSpace == lastSpace){
+        } else if (firstSpace == lastSpace) {
             var firstName = name.substring(0, firstSpace);
             var lastName = name.substring(firstSpace + 1);
             return ((StudentRepository) repository).findFirstByFirstNameIgnoreCaseAndLastNameIgnoreCase(firstName, lastName).orElse(null);
