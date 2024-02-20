@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class provides methods to manage courses in the school.
+ */
 @Service
 public class CourseService {
 
@@ -22,14 +25,30 @@ public class CourseService {
         this.studentService = studentService;
     }
 
+    /**
+     * Get all courses
+     * @return List of all courses
+     */
     public List<Course> getAll() {
         return courseRepository.findAll();
     }
 
+    /**
+     * Get a course by its id
+     * @param id The id of the course
+     * @return The course with the given id, or null if it doesn't exist
+     */
     public Course get(Long id) {
         return courseRepository.findById(id).orElse(null);
     }
 
+
+    /**
+     * Create a new course.
+     * If the teacher or students are not null, they are fetched from the database to ensure they exist.
+     * @param course The course to create
+     * @return The created course
+     */
     public Course create(Course course) {
         if (course.getTeacher() != null) {
             var teacher = teacherService.get(course.getTeacher().getId());
@@ -45,6 +64,12 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    /**
+     * Update a course overwriting all its fields.
+     * @param id The id of the course to update
+     * @param course The new course data
+     * @return The updated course, or null if the course doesn't exist
+     */
     public Course update(Long id, Course course) {
         var courseToUpdate = get(id);
         if (courseToUpdate == null) {
@@ -71,6 +96,12 @@ public class CourseService {
         return courseRepository.save(courseToUpdate);
     }
 
+    /**
+     * Update a course overwriting only the fields that are not null in the new course data.
+     * @param id The id of the course to update
+     * @param course The new course data
+     * @return The updated course, or null if the course doesn't exist
+     */
     public Course patch(Long id, Course course) {
         var courseToUpdate = get(id);
         if (courseToUpdate == null) {
@@ -99,6 +130,12 @@ public class CourseService {
         return courseRepository.save(courseToUpdate);
     }
 
+    /**
+     * Update the teacher of a course.
+     * @param id The id of the course to update
+     * @param teacher The new teacher
+     * @return The updated course, or null if the course doesn't exist or the teacher doesn't exist
+     */
     public Course updateTeacher(Long id, Teacher teacher) {
         var course = get(id);
         if (course == null) {
@@ -116,6 +153,12 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    /**
+     * Update the students of a course.
+     * @param id The id of the course to update
+     * @param students The new students with at least their names set
+     * @return The updated course, or null if the course doesn't exist
+     */
     public Course addStudentsByName(Long id, List<Student> students) {
         var course = get(id);
         if (course == null) {
@@ -135,6 +178,12 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    /**
+     * Update the students of a course.
+     * @param id The id of the course to update
+     * @param students The new students with at least their ids set
+     * @return The updated course, or null if the course doesn't exist
+     */
     public Course addStudentsById(Long id, List<Student> students) {
         var course = get(id);
         if (course == null) {
@@ -154,10 +203,18 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
+    /**
+     * Delete a course by its id
+     * @param id The id of the course to delete
+     */
     public void delete(Long id) {
         courseRepository.deleteById(id);
     }
 
+    /**
+     * Remove the teacher from a course.
+     * @param id The id of the course to update
+     */
     public void removeTeacher(Long id) {
         var course = get(id);
         if (course == null) {
@@ -167,6 +224,11 @@ public class CourseService {
         courseRepository.save(course);
     }
 
+    /**
+     * Remove a student from a course.
+     * @param id The id of the course to update
+     * @param studentId The id of the student to remove
+     */
     public void removeStudent(Long id, Long studentId) {
         var course = get(id);
         if (course == null) {

@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class represents a course in the school. It has a subject, a school year, a teacher and a list of students.
+ */
 @Entity(name = "course")
 public class Course {
     @Id
