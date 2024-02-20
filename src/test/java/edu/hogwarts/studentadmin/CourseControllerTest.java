@@ -34,6 +34,12 @@ public class CourseControllerTest {
     @MockBean
     private StudentService studentService;
 
+
+    /**
+     * Test that a student can be added to a course if the school year matches
+     * And that the response status is 200
+     * @throws Exception if the test fails
+     */
     @Test
     public void testStudentSchoolYearMatching() throws Exception{
         var studentCanAdd = new Student();
@@ -62,6 +68,11 @@ public class CourseControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Test that a student cannot be added to a course if the school year does not match
+     * And that the response status is 400
+     * @throws Exception if the test fails
+     */
     @Test
     public void testStudentSchoolYearNotMatching() throws Exception{
         var studentCannotAdd = new Student();
