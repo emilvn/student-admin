@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TeacherService extends HogwartsPersonService<Teacher> {
-
     public TeacherService(TeacherRepository repository, HouseService houseService) {
         super(repository, houseService);
     }
