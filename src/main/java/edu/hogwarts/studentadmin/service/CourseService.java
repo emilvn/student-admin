@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class provides methods to manage courses in the school.
+ * This class provides service methods to manage courses in the school.
  */
 @Service
 public class CourseService {
@@ -19,6 +19,12 @@ public class CourseService {
     private final TeacherService teacherService;
     private final StudentService studentService;
 
+    /**
+     * Constructor for CourseService. Uses dependency injection to get the CourseRepository, TeacherService, and StudentService.
+     * @param courseRepository The repository for courses
+     * @param teacherService The service for teachers
+     * @param studentService The service for students
+     */
     public CourseService(CourseRepository courseRepository, TeacherService teacherService, StudentService studentService) {
         this.courseRepository = courseRepository;
         this.teacherService = teacherService;
@@ -26,7 +32,7 @@ public class CourseService {
     }
 
     /**
-     * Get all courses
+     * Gets list of all courses from the database
      * @return List of all courses
      */
     public List<Course> getAll() {
@@ -34,7 +40,7 @@ public class CourseService {
     }
 
     /**
-     * Get a course by its id
+     * Gets a specific course by its id
      * @param id The id of the course
      * @return The course with the given id, or null if it doesn't exist
      */
@@ -44,7 +50,7 @@ public class CourseService {
 
 
     /**
-     * Create a new course.
+     * Creates a new course.
      * If the teacher or students are not null, they are fetched from the database to ensure they exist.
      * @param course The course to create
      * @return The created course
@@ -65,7 +71,7 @@ public class CourseService {
     }
 
     /**
-     * Update a course overwriting all its fields.
+     * Updates a course overwriting all its fields with the new course data.
      * @param id The id of the course to update
      * @param course The new course data
      * @return The updated course, or null if the course doesn't exist
@@ -97,7 +103,7 @@ public class CourseService {
     }
 
     /**
-     * Update a course overwriting only the fields that are not null in the new course data.
+     * Updates a course overwriting only the fields that are not null in the new course data.
      * @param id The id of the course to update
      * @param course The new course data
      * @return The updated course, or null if the course doesn't exist
@@ -131,7 +137,7 @@ public class CourseService {
     }
 
     /**
-     * Update the teacher of a course.
+     * Updates the teacher of a course.
      * @param id The id of the course to update
      * @param teacher The new teacher
      * @return The updated course, or null if the course doesn't exist or the teacher doesn't exist
@@ -154,9 +160,9 @@ public class CourseService {
     }
 
     /**
-     * Update the students of a course.
+     * Adds students to a course, finding them by their names.
      * @param id The id of the course to update
-     * @param students The new students with at least their names set
+     * @param students The new students as a list of Student objects with at least their names set
      * @return The updated course, or null if the course doesn't exist
      */
     public Course addStudentsByName(Long id, List<Student> students) {
@@ -179,9 +185,9 @@ public class CourseService {
     }
 
     /**
-     * Update the students of a course.
+     * Adds students to a course, finding them by their ids.
      * @param id The id of the course to update
-     * @param students The new students with at least their ids set
+     * @param students The new students as a list of Student objects with at least their ids set
      * @return The updated course, or null if the course doesn't exist
      */
     public Course addStudentsById(Long id, List<Student> students) {
@@ -204,7 +210,7 @@ public class CourseService {
     }
 
     /**
-     * Delete a course by its id
+     * Deletes a course by its id
      * @param id The id of the course to delete
      */
     public void delete(Long id) {
@@ -212,7 +218,7 @@ public class CourseService {
     }
 
     /**
-     * Remove the teacher from a course.
+     * Removes the teacher from a course, setting it to null.
      * @param id The id of the course to update
      */
     public void removeTeacher(Long id) {
@@ -225,7 +231,7 @@ public class CourseService {
     }
 
     /**
-     * Remove a student from a course.
+     * Removes a specific student from a course.
      * @param id The id of the course to update
      * @param studentId The id of the student to remove
      */

@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * REST controller for the House entity.
+ * Handles HTTP requests for the /houses endpoint.
  * Only GET methods are implemented.
  */
 @RestController
@@ -22,8 +23,9 @@ public class HouseController {
     }
 
     /**
-     * Get all houses.
-     * @return A list of all houses.
+     * Handle HTTP GET requests for the / endpoint.
+     * Returns a list of all houses in response body.
+     * @return An HTTP response with a list of houses or 204 no content if there are none.
      */
     @GetMapping
     public ResponseEntity<List<House>> getAll() {
@@ -35,7 +37,8 @@ public class HouseController {
     }
 
     /**
-     * Get a house by name. Ignores case.
+     * Handle HTTP GET requests for the /{name} endpoint.
+     * Returns the house with the given name in response body.
      * @param name The name of the house.
      * @return The house with the given name, or 404 if not found.
      */

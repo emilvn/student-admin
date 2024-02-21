@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * This class is a REST controller for courses.
- * It handles requests related to courses, such as getting, creating, updating and deleting courses.
+ * Handles HTTP requests for the /courses endpoint.
  */
 @RestController
 @RequestMapping("/courses")
@@ -24,6 +24,12 @@ public class CourseController {
     private final TeacherService teacherService;
     private final StudentService studentService;
 
+    /**
+     * Create a new CourseController. Uses dependency injection to set the CourseService, TeacherService, and StudentService.
+     * @param courseService The service for Course entities.
+     * @param teacherService The service for Teacher entities.
+     * @param studentService The service for Student entities.
+     */
     public CourseController(CourseService courseService, TeacherService teacherService, StudentService studentService) {
         this.courseService = courseService;
         this.teacherService = teacherService;
@@ -31,8 +37,8 @@ public class CourseController {
     }
 
     /**
-     * Get all courses
-     *
+     * Handle HTTP GET requests for the / endpoint.
+     * Returns list of all courses in response body
      * @return An HTTP response containing a list of all courses or a 204 status code if there are no courses
      */
     @GetMapping
@@ -45,8 +51,8 @@ public class CourseController {
     }
 
     /**
-     * Get a course by its id
-     *
+     * Handle HTTP GET requests for the /{id} endpoint.
+     * Returns course with the given id in response body
      * @param id The id of the course given as a path variable
      * @return An HTTP response containing the course with the given id, or a 404 status code if it doesn't exist
      */
@@ -60,7 +66,8 @@ public class CourseController {
     }
 
     /**
-     * Get the teacher of a specified course
+     * Handle HTTP GET requests for the /{id}/teacher endpoint.
+     * Returns teacher of the course with the given id in response body
      * @param id The id of the course given as a path variable
      * @return An HTTP response containing the teacher of the course with the given id, a 404 if the course doesn't exist, or a 204 status code if it doesn't have a teacher
      */
@@ -78,7 +85,8 @@ public class CourseController {
     }
 
     /**
-     * Get the students of a specified course
+     * Handle HTTP GET requests for the /{id}/students endpoint.
+     * Returns list of students of the course with the given id in response body
      * @param id The id of the course given as a path variable
      * @return An HTTP response containing the students of the course with the given id, a 404 if the course doesn't exist, or a 204 status code if it doesn't have students
      */
@@ -96,7 +104,8 @@ public class CourseController {
     }
 
     /**
-     * Create a new course
+     * Handle HTTP POST requests for the / endpoint.
+     * Creates a new course from the request body, and returns it in the response body
      * @param course The course to create, given as a request body
      * @return An HTTP response containing the created course, or a 400 status code if the course data is invalid
      */
@@ -122,7 +131,8 @@ public class CourseController {
     }
 
     /**
-     * Update a course
+     * Handle HTTP PUT requests for the /{id} endpoint.
+     * Updates a course by its id with the request body, and returns it in the response body
      * @param course The new course data, given as a request body
      * @param id The id of the course to update, given as a path variable
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist, or a 400 status code if the course data is invalid
@@ -153,7 +163,8 @@ public class CourseController {
     }
 
     /**
-     * Update a course partially
+     * Handle HTTP PATCH requests for the /{id} endpoint.
+     * Patches a course by its id with the request body, and returns it in the response body
      * @param course The new course data, given as a request body
      * @param id The id of the course to update, given as a path variable
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist, or a 400 status code if the course data is invalid
@@ -184,7 +195,8 @@ public class CourseController {
     }
 
     /**
-     * Update the teacher of a specified course
+     * Handle HTTP PUT requests for the /{id}/teacher endpoint.
+     * Updates the teacher of a course by its id with the request body, and returns the updated course in the response body
      * @param teacher The new teacher data, given as a request body
      * @param id The id of the course to update, given as a path variable
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist
@@ -199,7 +211,8 @@ public class CourseController {
     }
 
     /**
-     * Add students to a specified course
+     * Handle HTTP POST requests for the /{id}/students endpoint.
+     * Adds students to a course by its id with the request body, and returns the updated course in the response body
      * @param id The id of the course to update, given as a path variable
      * @param students The students to add, given as a request body, must contain at least either student ids or names
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist, or a 400 status code if the student data is invalid
@@ -242,7 +255,8 @@ public class CourseController {
     }
 
     /**
-     * Delete a course
+     * Handle HTTP DELETE requests for the /{id} endpoint.
+     * Deletes a course by its id, and returns it in the response body
      * @param id The id of the course to delete, given as a path variable
      * @return An HTTP response containing the deleted course, or a 404 status code if the course doesn't exist
      */
@@ -257,7 +271,8 @@ public class CourseController {
     }
 
     /**
-     * Remove the teacher of a specified course
+     * Handle HTTP DELETE requests for the /{id}/teacher endpoint.
+     * Removes the teacher from a course by its id, and returns the removed teacher in the response body
      * @param id The id of the course to update, given as a path variable
      * @return An HTTP response containing the removed teacher, or a 404 status code if the course doesn't exist
      */
@@ -273,7 +288,8 @@ public class CourseController {
     }
 
     /**
-     * Remove a student from a specified course
+     * Handle HTTP DELETE requests for the /{courseId}/students/{studentId} endpoint.
+     * Removes a student from a course by their id, and returns the removed student in the response body
      * @param courseId The id of the course to update, given as a path variable
      * @param studentId The id of the student to remove, given as a path variable
      * @return An HTTP response containing the removed student, a 404 if the course doesn't exist, or a 400 status code if the student doesn't exist

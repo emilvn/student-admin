@@ -8,8 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A teacher at Hogwarts
-
+ * This class represents a teacher at Hogwarts.
  */
 @Entity(name = "teacher")
 public class Teacher extends HogwartsPerson {
@@ -40,7 +39,7 @@ public class Teacher extends HogwartsPerson {
     }
 
     /**
-     * Remove teacher from courses when teacher is removed
+     * Makes sure that the teacher is removed from all courses when they are deleted.
      */
     @PreRemove
     private void removeTeacherFromCourse() {

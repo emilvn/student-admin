@@ -5,16 +5,21 @@ import edu.hogwarts.studentadmin.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
 /**
- * Service for Student entities.
+ * This class provides service methods to manage students in the school.
  */
 @Service
 public class StudentService extends HogwartsPersonService<Student> {
+    /**
+     * Constructor for StudentService. Uses dependency injection to get the StudentRepository and HouseService.
+     * @param studentRepository The repository for students
+     * @param houseService The service for houses
+     */
     public StudentService(StudentRepository studentRepository, HouseService houseService) {
         super(studentRepository, houseService);
     }
 
     /**
-     * Get a student by their full name.
+     * Gets a specific student by their full name.
      * @param name the full name or first name of the student
      * @return the first student found with the given name, or null if none is found
      */
@@ -38,7 +43,7 @@ public class StudentService extends HogwartsPersonService<Student> {
     }
 
     /**
-     * Update a student by their ID. Overwrites the entire student with the given new student.
+     * Updates a student by their ID. Overwrites the entire student with the given new student.
      * @param student the new student to replace the old student
      * @param id the ID of the student to update
      * @return the updated student, or null if the student with the given ID is not found
@@ -61,7 +66,7 @@ public class StudentService extends HogwartsPersonService<Student> {
     }
 
     /**
-     * Patch a student by their ID. Updates only the non-null fields of the student with the given new student.
+     * Updates a student by their ID. Updates only the non-null fields of the student with the given new student.
      * @param student the new student to update the old student
      * @param id the ID of the student to update
      * @return the updated student, or null if the student with the given ID is not found

@@ -6,29 +6,34 @@ import edu.hogwarts.studentadmin.repository.HogwartsPersonRepository;
 import java.util.List;
 
 /**
- * Service for HogwartsPerson entities.
+ * This class provides service methods to manage HogwartsPerson entities in the school.
  * @param <M> The type of HogwartsPerson (Student | Teacher).
  */
 public abstract class HogwartsPersonService<M extends HogwartsPerson> {
     protected final HouseService houseService;
     protected final HogwartsPersonRepository<M> repository;
 
+    /**
+     * Constructor for HogwartsPersonService. Uses dependency injection to get the repository and HouseService.
+     * @param repository The repository for HogwartsPerson entities.
+     * @param houseService The service for House entities.
+     */
     public HogwartsPersonService(HogwartsPersonRepository<M> repository, HouseService houseService) {
         this.repository = repository;
         this.houseService = houseService;
     }
 
     /**
-     * Get all HogwartsPerson entities.
-     * @return A list of HogwartsPerson entities.
+     * Gets a list of all the HogwartsPerson entities of the given type.
+     * @return A list of all HogwartsPerson entities of the given type.
      */
     public List<M> getAll() {
         return repository.findAll();
     }
 
     /**
-     * Get a HogwartsPerson entity by its ID.
-     * @param id The ID of the HogwartsPerson entity.
+     * Gets a HogwartsPerson entity by its ID.
+     * @param id The ID of the HogwartsPerson entity to find.
      * @return The HogwartsPerson entity, or null if it does not exist.
      */
     public M get(Long id) {
@@ -36,7 +41,7 @@ public abstract class HogwartsPersonService<M extends HogwartsPerson> {
     }
 
     /**
-     * Create a new HogwartsPerson entity.
+     * Creates a new HogwartsPerson entity.
      * Uses the HouseService to get the House entity by its name and set it on the HogwartsPerson entity.
      * @param person The HogwartsPerson entity to create.
      * @return The created HogwartsPerson entity.
@@ -53,7 +58,7 @@ public abstract class HogwartsPersonService<M extends HogwartsPerson> {
     public abstract M patch(M person, Long id);
 
     /**
-     * Delete a HogwartsPerson entity by its ID.
+     * Deletes a HogwartsPerson entity by its ID.
      * @param id The ID of the HogwartsPerson entity to delete.
      */
     public void delete(Long id) {

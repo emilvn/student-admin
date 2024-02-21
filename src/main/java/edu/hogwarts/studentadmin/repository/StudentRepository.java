@@ -6,6 +6,8 @@ import java.util.Optional;
 
 /**
  * Repository for Student entities.
+ * Provides all JpaRepository methods for the Student entity.
+ * Also provides custom methods for finding students by first name, first name + last name, and full name.
  */
 public interface StudentRepository extends HogwartsPersonRepository<Student> {
 

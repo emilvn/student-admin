@@ -8,19 +8,24 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * Controller for HogwartsPerson entities.
+ * Controller superclass for HogwartsPerson entities.
  * @param <M> The type of HogwartsPerson (Student | Teacher).
  * @param <S> The service for the HogwartsPerson (StudentService | TeacherService).
  */
 public abstract class HogwartsPersonController<M extends HogwartsPerson, S extends HogwartsPersonService<M>> {
     protected final S service;
 
+    /**
+     * Create a new HogwartsPersonController. Uses dependency injection to set the service.
+     * @param service The service for HogwartsPerson entities.
+     */
     public HogwartsPersonController(S service) {
         this.service = service;
     }
 
     /**
-     * Get all HogwartsPerson entities.
+     * Handle HTTP GET requests for the / endpoint.
+     * Gets all HogwartsPerson entities.
      * @return An HTTP response with a list of HogwartsPerson entities or 204 no content if there are none.
      */
     @GetMapping
@@ -33,7 +38,8 @@ public abstract class HogwartsPersonController<M extends HogwartsPerson, S exten
     }
 
     /**
-     * Get a HogwartsPerson entity by its ID.
+     * Handle HTTP GET requests for the /{id} endpoint.
+     * Gets a HogwartsPerson entity by its ID.
      * @param id The ID of the HogwartsPerson entity.
      * @return An HTTP response with the HogwartsPerson entity or 404 not found if it does not exist.
      */
@@ -47,7 +53,8 @@ public abstract class HogwartsPersonController<M extends HogwartsPerson, S exten
     }
 
     /**
-     * Create a new HogwartsPerson entity.
+     * Handle HTTP POST requests for the / endpoint.
+     * Creates a new HogwartsPerson entity from the request body.
      * @param person The HogwartsPerson entity to create.
      * @return An HTTP response with the created HogwartsPerson entity.
      */
@@ -57,7 +64,8 @@ public abstract class HogwartsPersonController<M extends HogwartsPerson, S exten
     }
 
     /**
-     * Update a HogwartsPerson entity by its ID.
+     * Handle HTTP PUT requests for the /{id} endpoint.
+     * Updates a HogwartsPerson entity by its ID with the request body.
      * @param person The updated HogwartsPerson entity.
      * @param id The ID of the HogwartsPerson entity to update.
      * @return An HTTP response with the updated HogwartsPerson entity or 404 not found if it does not exist.
@@ -72,7 +80,9 @@ public abstract class HogwartsPersonController<M extends HogwartsPerson, S exten
     }
 
     /**
-     * Patch a HogwartsPerson entity by its ID.
+     * Handle HTTP PATCH requests for the /{id} endpoint.
+     * Patch a HogwartsPerson entity by its ID with the request body.
+     * Only updates the fields present in the request body.
      * @param person The updated HogwartsPerson entity.
      * @param id The ID of the HogwartsPerson entity to patch.
      * @return An HTTP response with the patched HogwartsPerson entity or 404 not found if it does not exist.
@@ -87,6 +97,7 @@ public abstract class HogwartsPersonController<M extends HogwartsPerson, S exten
     }
 
     /**
+     * Handle HTTP DELETE requests for the /{id} endpoint.
      * Delete a HogwartsPerson entity by its ID.
      * @param id The ID of the HogwartsPerson entity to delete.
      * @return An HTTP response with the deleted HogwartsPerson entity or 404 not found if it does not exist.

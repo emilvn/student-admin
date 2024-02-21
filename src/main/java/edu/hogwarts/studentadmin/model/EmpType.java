@@ -1,7 +1,7 @@
 package edu.hogwarts.studentadmin.model;
 
 /**
- * Represents the type of employment for an employee at Hogwarts.
+ * This enum represents the different types of employment for teachers at Hogwarts.
  */
 public enum EmpType {
     TENURED, TEMPORARY, DECEASED, DISCHARGED, PROBATION

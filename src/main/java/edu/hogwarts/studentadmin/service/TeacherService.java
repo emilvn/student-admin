@@ -5,16 +5,21 @@ import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
 
 /**
- * Service class for Teacher
+ * This class provides service methods to manage teachers in the school.
  */
 @Service
 public class TeacherService extends HogwartsPersonService<Teacher> {
+    /**
+     * Constructor for TeacherService. Uses dependency injection to get the TeacherRepository and HouseService.
+     * @param repository The repository for teachers
+     * @param houseService The service for houses
+     */
     public TeacherService(TeacherRepository repository, HouseService houseService) {
         super(repository, houseService);
     }
 
     /**
-     * Update a teacher overwriting all fields of the existing teacher
+     * Updates a teacher by their ID. Overwrites the entire teacher with the given new teacher.
      * @param teacher the teacher to update
      * @param id the id of the teacher to update
      * @return the updated teacher or null if the teacher was not found
@@ -37,7 +42,7 @@ public class TeacherService extends HogwartsPersonService<Teacher> {
     }
 
     /**
-     * Update a teacher overwriting only the fields that are not null
+     * Updates a teacher by their ID. Overwrites only the fields of the teacher that are not null in the new teacher.
      * @param teacher the teacher to update
      * @param id the id of the teacher to update
      * @return the updated teacher or null if the teacher was not found

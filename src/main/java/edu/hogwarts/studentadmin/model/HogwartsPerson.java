@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.time.Period;
 
 /**
- * A person in the Harry Potter universe.
+ * This superclass represents a person at Hogwarts.
  */
 @MappedSuperclass
 public abstract class HogwartsPerson {
@@ -26,6 +26,12 @@ public abstract class HogwartsPerson {
     @JoinColumn(name = "house")
     protected House house;
 
+    /**
+     * Transient field for the house name.
+     * This field is not stored in the database,
+     * but is used to store the house name when reading from the JSON file,
+     * and later to set the house field by finding the house by name.
+     */
     @Transient
     protected String houseName;
 
@@ -57,6 +63,12 @@ public abstract class HogwartsPerson {
         this.lastName = lastName;
     }
 
+    /**
+     * JSON getter for the full name of the person.
+     * Used when serializing to the JSON file.
+     * Used to get the full name as one field in the JSON file, rather than separate first, middle, and last names.
+     * @return The full name of the person.
+     */
     @JsonGetter("name")
     public String getName() {
         String fullName = firstName;
@@ -70,6 +82,13 @@ public abstract class HogwartsPerson {
         return fullName;
     }
 
+    /**
+     * JSON setter for the full name of the person.
+     * Used when deserializing from the JSON file.
+     * Makes it possible to set the full name of the person in the JSON file.
+     * This method splits the full name into first, middle, and last names.
+     * @param fullName The full name of the person.
+     */
     @JsonSetter("name")
     public void setName(String fullName) {
         int firstSpace = fullName.indexOf(' ');
@@ -98,6 +117,12 @@ public abstract class HogwartsPerson {
         this.dateOfBirth = dateOfBirth;
     }
 
+    /**
+     * JSON getter for the age of the person.
+     * Used when serializing to the JSON file.
+     * This method calculates the age of the person based on the date of birth.
+     * @return The age of the person.
+     */
     @JsonGetter("age")
     public int getAge() {
         if (dateOfBirth == null) return 0;
@@ -113,6 +138,12 @@ public abstract class HogwartsPerson {
         this.house = house;
     }
 
+    /**
+     * JSON getter for the house name of the person.
+     * Used when serializing to the JSON file.
+     * Makes sure that only the name of the house is serialized to the JSON file, rather than the whole house object.
+     * @return The house name of the person.
+     */
     @JsonGetter("house")
     public String getHouseJson() {
         if (house == null) return null;
@@ -123,6 +154,13 @@ public abstract class HogwartsPerson {
         return houseName;
     }
 
+    /**
+     * JSON setter for the house name of the person.
+     * Used when deserializing from the JSON file.
+     * This method sets the house name of the person based on the JSON file.
+     * It capitalizes the first letter of the house name to match the database.
+     * @param houseName The house name of the person.
+     */
     @JsonSetter("house")
     public void setHouseName(String houseName) {
         char firstLetter = Character.toUpperCase(houseName.charAt(0));

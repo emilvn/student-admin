@@ -7,7 +7,7 @@ import jakarta.persistence.Id;
 import java.util.List;
 
 /**
- * Represents a Hogwarts house.
+ * This class represents a house at Hogwarts.
  */
 @Entity(name = "house")
 public class House {
@@ -50,6 +50,11 @@ public class House {
         return List.of(primaryColor, secondaryColor);
     }
 
+    /**
+     * Sets the primary and secondary colors of the house.
+     * Makes sure that only two colors are set.
+     * @param colors List of colors to set.
+     */
     public void setColors(List<String> colors) {
         this.primaryColor = colors.get(0);
         this.secondaryColor = colors.get(1);

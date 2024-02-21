@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents a course in the school. It has a subject, a school year, a teacher and a list of students.
+ * This class represents a course in the school.
  */
 @Entity(name = "course")
 public class Course {
@@ -33,6 +33,10 @@ public class Course {
         this.students = students;
     }
 
+    /**
+     * Removes a student from the course. Primarily used by the Student class to automatically remove the student from the course when the student is deleted.
+     * @param student The student to remove from the course.
+     */
     public void removeStudent(Student student) {
         students.remove(student);
     }
