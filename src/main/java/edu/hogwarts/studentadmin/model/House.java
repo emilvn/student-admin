@@ -6,6 +6,9 @@ import jakarta.persistence.Id;
 
 import java.util.List;
 
+/**
+ * Represents a Hogwarts house.
+ */
 @Entity(name = "house")
 public class House {
 

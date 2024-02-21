@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for the House entity.
+ * Only GET methods are implemented.
+ */
 @RestController
 @RequestMapping("/houses")
 @CrossOrigin
@@ -17,6 +21,10 @@ public class HouseController {
         this.houseService = houseService;
     }
 
+    /**
+     * Get all houses.
+     * @return A list of all houses.
+     */
     @GetMapping
     public ResponseEntity<List<House>> getAll() {
         var houses = houseService.getAll();
@@ -26,6 +34,11 @@ public class HouseController {
         return ResponseEntity.ok(houses);
     }
 
+    /**
+     * Get a house by name. Ignores case.
+     * @param name The name of the house.
+     * @return The house with the given name, or 404 if not found.
+     */
     @GetMapping("/{name}")
     public ResponseEntity<House> get(@PathVariable String name) {
         var house = houseService.get(name);
