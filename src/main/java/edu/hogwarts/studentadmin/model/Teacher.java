@@ -7,6 +7,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A teacher at Hogwarts
+
+ */
 @Entity(name = "teacher")
 public class Teacher extends HogwartsPerson {
     private Boolean headOfHouse;
@@ -35,6 +39,9 @@ public class Teacher extends HogwartsPerson {
         this.employmentEnd = employmentEnd;
     }
 
+    /**
+     * Remove teacher from courses when teacher is removed
+     */
     @PreRemove
     private void removeTeacherFromCourse() {
         for (Course course : courses) {

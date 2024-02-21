@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A student at Hogwarts.
+ */
 @Entity(name = "student")
 public class Student extends HogwartsPerson {
     private Boolean prefect;
@@ -38,6 +41,9 @@ public class Student extends HogwartsPerson {
         this.graduated = graduated;
     }
 
+    /**
+     * Remove this student from all courses when they are deleted.
+     */
     @PreRemove
     public void removeStudentFromCourse() {
         for (Course course : courses) {

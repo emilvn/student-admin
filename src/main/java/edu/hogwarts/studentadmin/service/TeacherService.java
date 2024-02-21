@@ -4,12 +4,21 @@ import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class for Teacher
+ */
 @Service
 public class TeacherService extends HogwartsPersonService<Teacher> {
     public TeacherService(TeacherRepository repository, HouseService houseService) {
         super(repository, houseService);
     }
 
+    /**
+     * Update a teacher overwriting all fields of the existing teacher
+     * @param teacher the teacher to update
+     * @param id the id of the teacher to update
+     * @return the updated teacher or null if the teacher was not found
+     */
     public Teacher update(Teacher teacher, Long id) {
         var teacherToUpdate = repository.findById(id);
         if (teacherToUpdate.isPresent()) {
@@ -27,6 +36,12 @@ public class TeacherService extends HogwartsPersonService<Teacher> {
         return null;
     }
 
+    /**
+     * Update a teacher overwriting only the fields that are not null
+     * @param teacher the teacher to update
+     * @param id the id of the teacher to update
+     * @return the updated teacher or null if the teacher was not found
+     */
     public Teacher patch(Teacher teacher, Long id) {
         var teacherToUpdate = repository.findById(id);
         if (teacherToUpdate.isPresent()) {

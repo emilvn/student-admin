@@ -4,12 +4,20 @@ import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service for Student entities.
+ */
 @Service
 public class StudentService extends HogwartsPersonService<Student> {
     public StudentService(StudentRepository studentRepository, HouseService houseService) {
         super(studentRepository, houseService);
     }
 
+    /**
+     * Get a student by their full name.
+     * @param name the full name or first name of the student
+     * @return the first student found with the given name, or null if none is found
+     */
     public Student get(String name) {
         if (name == null || name.isBlank()) {
             return null;
@@ -29,6 +37,12 @@ public class StudentService extends HogwartsPersonService<Student> {
         return ((StudentRepository) repository).findFirstByFirstNameIgnoreCaseAndMiddleNameIgnoreCaseAndLastNameIgnoreCase(firstName, middleName, lastName).orElse(null);
     }
 
+    /**
+     * Update a student by their ID. Overwrites the entire student with the given new student.
+     * @param student the new student to replace the old student
+     * @param id the ID of the student to update
+     * @return the updated student, or null if the student with the given ID is not found
+     */
     public Student update(Student student, Long id) {
         var studentToUpdate = repository.findById(id);
         if (studentToUpdate.isPresent()) {
@@ -46,6 +60,12 @@ public class StudentService extends HogwartsPersonService<Student> {
         return null;
     }
 
+    /**
+     * Patch a student by their ID. Updates only the non-null fields of the student with the given new student.
+     * @param student the new student to update the old student
+     * @param id the ID of the student to update
+     * @return the updated student, or null if the student with the given ID is not found
+     */
     public Student patch(Student student, Long id) {
         var studentToUpdate = repository.findById(id);
         if (studentToUpdate.isPresent()) {
