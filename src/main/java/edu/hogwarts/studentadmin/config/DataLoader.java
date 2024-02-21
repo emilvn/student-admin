@@ -22,6 +22,12 @@ public class DataLoader implements CommandLineRunner {
     private final StudentRepository studentRepository;
     private final TeacherRepository teacherRepository;
 
+    /**
+     * DataLoader constructor, used to inject the repositories
+     * @param houseRepository the house repository
+     * @param studentRepository the student repository
+     * @param teacherRepository the teacher repository
+     */
     public DataLoader(HouseRepository houseRepository, StudentRepository studentRepository, TeacherRepository teacherRepository) {
         this.studentRepository = studentRepository;
         this.teacherRepository = teacherRepository;
@@ -37,6 +43,9 @@ public class DataLoader implements CommandLineRunner {
 
     }
 
+    /**
+     * Create the four houses of Hogwarts
+     */
     private void createHouses() {
         var gryffindor = new House("Gryffindor", "Godric Gryffindor", "scarlet", "gold");
         var hufflepuff = new House("Hufflepuff", "Helga Hufflepuff", "yellow", "black");
@@ -50,6 +59,9 @@ public class DataLoader implements CommandLineRunner {
         houseRepository.save(slytherin);
     }
 
+    /**
+     * Create some students
+     */
     private void createStudents() {
         var gryffindor = houseRepository.findById("Gryffindor");
         var hufflepuff = houseRepository.findById("Hufflepuff");
@@ -75,6 +87,9 @@ public class DataLoader implements CommandLineRunner {
         studentRepository.saveAll(Arrays.asList(students));
     }
 
+    /**
+     * Create some teachers
+     */
     private void createTeachers() {
         var gryffindor = houseRepository.findById("Gryffindor");
         var hufflepuff = houseRepository.findById("Hufflepuff");
