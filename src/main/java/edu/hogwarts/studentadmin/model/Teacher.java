@@ -1,6 +1,5 @@
 package edu.hogwarts.studentadmin.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -48,12 +47,10 @@ public class Teacher extends HogwartsPerson {
         }
     }
 
-    @JsonIgnore
     public List<Course> getCourses() {
         return courses;
     }
 
-    @JsonIgnore
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }

@@ -1,14 +1,17 @@
 package edu.hogwarts.studentadmin.service;
 
+import edu.hogwarts.studentadmin.dto.TeacherDTO;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.TeacherRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * This class provides service methods to manage teachers in the school.
  */
 @Service
-public class TeacherService extends HogwartsPersonService<Teacher> {
+public class TeacherService extends HogwartsPersonService<Teacher, TeacherDTO> {
     /**
      * Constructor for TeacherService. Uses dependency injection to get the TeacherRepository and HouseService.
      * @param repository The repository for teachers
@@ -18,64 +21,126 @@ public class TeacherService extends HogwartsPersonService<Teacher> {
         super(repository, houseService);
     }
 
+    public TeacherDTO convertToDTO(Teacher teacher) {
+        var teacherDTO = new TeacherDTO();
+        if(teacher.getId() != null) {
+            teacherDTO.setId(teacher.getId());
+        }
+        if(teacher.getHouse() != null) {
+            teacherDTO.setHouse(teacher.getHouse());
+        }
+        teacherDTO.setFirstName(teacher.getFirstName());
+        teacherDTO.setMiddleName(teacher.getMiddleName());
+        teacherDTO.setLastName(teacher.getLastName());
+        teacherDTO.setDateOfBirth(teacher.getDateOfBirth());
+        teacherDTO.setEmployment(teacher.getEmployment());
+        teacherDTO.setEmploymentStart(teacher.getEmploymentStart());
+        teacherDTO.setEmploymentEnd(teacher.getEmploymentEnd());
+        teacherDTO.setHeadOfHouse(teacher.isHeadOfHouse());
+        return teacherDTO;
+    }
+
+    public Teacher convertToEntity(TeacherDTO teacherDTO) {
+        var teacherEntity = new Teacher();
+        if(teacherDTO.getId() != null) {
+            teacherEntity.setId(teacherDTO.getId());
+        }
+
+        teacherEntity.setHouse(houseService.get(teacherDTO.getHouseName()));
+        teacherEntity.setFirstName(teacherDTO.getFirstName());
+        teacherEntity.setMiddleName(teacherDTO.getMiddleName());
+        teacherEntity.setLastName(teacherDTO.getLastName());
+        teacherEntity.setDateOfBirth(teacherDTO.getDateOfBirth());
+        teacherEntity.setEmployment(teacherDTO.getEmployment());
+        teacherEntity.setEmploymentStart(teacherDTO.getEmploymentStart());
+        teacherEntity.setEmploymentEnd(teacherDTO.getEmploymentEnd());
+        teacherEntity.setHeadOfHouse(teacherDTO.isHeadOfHouse());
+        return teacherEntity;
+    }
+
     /**
-     * Updates a teacher by their ID. Overwrites the entire teacher with the given new teacher.
-     * @param teacher the teacher to update
+     * Gets a list of all the teachers.
+     * @return A list of all teachers.
+     */
+    public List<TeacherDTO> getAll() {
+        var teachers = repository.findAll();
+        return teachers.stream().map(this::convertToDTO).toList();
+    }
+
+    /**
+     * Gets a teacher by their ID.
+     * @param id The ID of the HogwartsPerson entity to find.
+     * @return The teacher entity, or null if it does not exist.
+     */
+    public TeacherDTO get(Long id) {
+        var teacher = repository.findById(id).orElse(null);
+        if (teacher == null) {
+            return null;
+        }
+        return convertToDTO(teacher);
+    }
+
+    /**
+     * Creates a new teacher from the given teacher DTO.
+     * @param teacherDTO the teacher DTO to create the teacher from
+     * @return the created teacher
+     */
+    public TeacherDTO create(TeacherDTO teacherDTO) {
+        var teacherEntity = convertToEntity(teacherDTO);
+        return convertToDTO(repository.save(teacherEntity));
+    }
+
+    /**
+     * Updates a teacher by their ID. Overwrites the entire teacher with the given teacher DTO.
+     * @param teacherDTO the teacher to update
      * @param id the id of the teacher to update
      * @return the updated teacher or null if the teacher was not found
      */
-    public Teacher update(Teacher teacher, Long id) {
-        var teacherToUpdate = repository.findById(id);
-        if (teacherToUpdate.isPresent()) {
-            var updatedTeacher = teacherToUpdate.get();
-            var house = houseService.get(teacher.getHouseName());
-            updatedTeacher.setHouse(house);
-            updatedTeacher.setName(teacher.getName());
-            updatedTeacher.setDateOfBirth(teacher.getDateOfBirth());
-            updatedTeacher.setEmployment(teacher.getEmployment());
-            updatedTeacher.setEmploymentStart(teacher.getEmploymentStart());
-            updatedTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
-            updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
-            return repository.save(updatedTeacher);
+    public TeacherDTO update(TeacherDTO teacherDTO, Long id) {
+        var teacherEntity = repository.findById(id).orElse(null);
+        if(teacherEntity == null){
+            return null;
         }
-        return null;
+        teacherEntity = convertToEntity(teacherDTO);
+        return convertToDTO(repository.save(teacherEntity));
     }
 
     /**
      * Updates a teacher by their ID. Overwrites only the fields of the teacher that are not null in the new teacher.
-     * @param teacher the teacher to update
+     * @param teacherDTO the teacher to update
      * @param id the id of the teacher to update
      * @return the updated teacher or null if the teacher was not found
      */
-    public Teacher patch(Teacher teacher, Long id) {
-        var teacherToUpdate = repository.findById(id);
-        if (teacherToUpdate.isPresent()) {
-            var updatedTeacher = teacherToUpdate.get();
-            if (teacher.getHouseName() != null) {
-                var house = houseService.get(teacher.getHouseName());
-                updatedTeacher.setHouse(house);
-            }
-            if (teacher.getName() != null) {
-                updatedTeacher.setName(teacher.getFirstName());
-            }
-            if (teacher.getDateOfBirth() != null) {
-                updatedTeacher.setDateOfBirth(teacher.getDateOfBirth());
-            }
-            if (teacher.getEmployment() != null) {
-                updatedTeacher.setEmployment(teacher.getEmployment());
-            }
-            if (teacher.getEmploymentStart() != null) {
-                updatedTeacher.setEmploymentStart(teacher.getEmploymentStart());
-            }
-            if (teacher.getEmploymentEnd() != null) {
-                updatedTeacher.setEmploymentEnd(teacher.getEmploymentEnd());
-            }
-            if (teacher.isHeadOfHouse() != null) {
-                updatedTeacher.setHeadOfHouse(teacher.isHeadOfHouse());
-            }
-
-            return repository.save(updatedTeacher);
+    public TeacherDTO patch(TeacherDTO teacherDTO, Long id) {
+        var teacherEntity = repository.findById(id).orElse(null);
+        if (teacherEntity == null) {
+            return null;
         }
-        return null;
+        if (teacherDTO.getHouseName() != null) {
+            var house = houseService.get(teacherDTO.getHouseName());
+            teacherEntity.setHouse(house);
+        }
+        if (teacherDTO.getName() != null) {
+            teacherEntity.setFirstName(teacherDTO.getFirstName());
+            teacherEntity.setMiddleName(teacherDTO.getMiddleName());
+            teacherEntity.setLastName(teacherDTO.getLastName());
+        }
+        if (teacherDTO.getDateOfBirth() != null) {
+            teacherEntity.setDateOfBirth(teacherDTO.getDateOfBirth());
+        }
+        if (teacherDTO.getEmployment() != null) {
+            teacherEntity.setEmployment(teacherDTO.getEmployment());
+        }
+        if (teacherDTO.getEmploymentStart() != null) {
+            teacherEntity.setEmploymentStart(teacherDTO.getEmploymentStart());
+        }
+        if (teacherDTO.getEmploymentEnd() != null) {
+            teacherEntity.setEmploymentEnd(teacherDTO.getEmploymentEnd());
+        }
+        if (teacherDTO.isHeadOfHouse() != null) {
+            teacherEntity.setHeadOfHouse(teacherDTO.isHeadOfHouse());
+        }
+
+        return convertToDTO(repository.save(teacherEntity));
     }
 }

@@ -1,14 +1,17 @@
 package edu.hogwarts.studentadmin.service;
 
+import edu.hogwarts.studentadmin.dto.StudentDTO;
 import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.repository.StudentRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * This class provides service methods to manage students in the school.
  */
 @Service
-public class StudentService extends HogwartsPersonService<Student> {
+public class StudentService extends HogwartsPersonService<Student, StudentDTO> {
     /**
      * Constructor for StudentService. Uses dependency injection to get the StudentRepository and HouseService.
      * @param studentRepository The repository for students
@@ -16,6 +19,66 @@ public class StudentService extends HogwartsPersonService<Student> {
      */
     public StudentService(StudentRepository studentRepository, HouseService houseService) {
         super(studentRepository, houseService);
+    }
+
+    public StudentDTO convertToDTO(Student student) {
+        var studentDTO = new StudentDTO();
+        if(student.getId() != null) {
+            studentDTO.setId(student.getId());
+        }
+        if(student.getHouse() != null) {
+            studentDTO.setHouse(student.getHouse());
+        }
+        studentDTO.setFirstName(student.getFirstName());
+        studentDTO.setMiddleName(student.getMiddleName());
+        studentDTO.setLastName(student.getLastName());
+        studentDTO.setDateOfBirth(student.getDateOfBirth());
+        studentDTO.setEnrollmentYear(student.getEnrollmentYear());
+        studentDTO.setGraduationYear(student.getGraduationYear());
+        studentDTO.setGraduated(student.isGraduated());
+        studentDTO.setPrefect(student.isPrefect());
+        studentDTO.setSchoolYear(student.getSchoolYear());
+        return studentDTO;
+    }
+
+    public Student convertToEntity(StudentDTO studentDTO) {
+        var studentEntity = new Student();
+        if(studentDTO.getId() != null) {
+            studentEntity.setId(studentDTO.getId());
+        }
+        studentEntity.setHouse(houseService.get(studentDTO.getHouseName()));
+        studentEntity.setFirstName(studentDTO.getFirstName());
+        studentEntity.setMiddleName(studentDTO.getMiddleName());
+        studentEntity.setLastName(studentDTO.getLastName());
+        studentEntity.setDateOfBirth(studentDTO.getDateOfBirth());
+        studentEntity.setEnrollmentYear(studentDTO.getEnrollmentYear());
+        studentEntity.setGraduationYear(studentDTO.getGraduationYear());
+        studentEntity.setGraduated(studentDTO.isGraduated());
+        studentEntity.setPrefect(studentDTO.isPrefect());
+        studentEntity.setSchoolYear(studentDTO.getSchoolYear());
+        return studentEntity;
+    }
+
+    /**
+     * Gets a list of all the students.
+     * @return A list of all students.
+     */
+    public List<StudentDTO> getAll() {
+        var students = repository.findAll();
+        return students.stream().map(this::convertToDTO).toList();
+    }
+
+    /**
+     * Gets a student by their ID.
+     * @param id The ID of the student to find.
+     * @return The student, or null if it does not exist.
+     */
+    public StudentDTO get(Long id) {
+        var student = repository.findById(id).orElse(null);
+        if (student == null) {
+            return null;
+        }
+        return convertToDTO(student);
     }
 
     /**
@@ -43,66 +106,69 @@ public class StudentService extends HogwartsPersonService<Student> {
     }
 
     /**
-     * Updates a student by their ID. Overwrites the entire student with the given new student.
-     * @param student the new student to replace the old student
+     * Creates a new student from the given student DTO.
+     * @param studentDTO the student DTO to create the student from
+     * @return the created student
+     */
+    public StudentDTO create(StudentDTO studentDTO) {
+        var studentEntity = convertToEntity(studentDTO);
+        return convertToDTO(repository.save(studentEntity));
+    }
+
+    /**
+     * Updates a student by their ID. Overwrites the entire student with the given student DTO.
+     * @param studentDTO the new student to replace the old student
      * @param id the ID of the student to update
      * @return the updated student, or null if the student with the given ID is not found
      */
-    public Student update(Student student, Long id) {
-        var studentToUpdate = repository.findById(id);
-        if (studentToUpdate.isPresent()) {
-            var updatedStudent = studentToUpdate.get();
-            var house = houseService.get(student.getHouseName());
-            updatedStudent.setHouse(house);
-            updatedStudent.setName(student.getName());
-            updatedStudent.setDateOfBirth(student.getDateOfBirth());
-            updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
-            updatedStudent.setGraduationYear(student.getGraduationYear());
-            updatedStudent.setGraduated(student.isGraduated());
-            updatedStudent.setPrefect(student.isPrefect());
-            return repository.save(updatedStudent);
+    public StudentDTO update(StudentDTO studentDTO, Long id) {
+        var studentEntity = repository.findById(id).orElse(null);
+        if(studentEntity == null){
+            return null;
         }
-        return null;
+        studentEntity = convertToEntity(studentDTO);
+        return convertToDTO(repository.save(studentEntity));
     }
 
     /**
      * Updates a student by their ID. Updates only the non-null fields of the student with the given new student.
-     * @param student the new student to update the old student
+     * @param studentDTO the new student to update the old student
      * @param id the ID of the student to update
      * @return the updated student, or null if the student with the given ID is not found
      */
-    public Student patch(Student student, Long id) {
-        var studentToUpdate = repository.findById(id);
-        if (studentToUpdate.isPresent()) {
-            var updatedStudent = studentToUpdate.get();
-            if (student.getHouseName() != null) {
-                var house = houseService.get(student.getHouseName());
-                updatedStudent.setHouse(house);
-            }
-            if (student.getName() != null) {
-                updatedStudent.setName(student.getName());
-            }
-            if (student.getDateOfBirth() != null) {
-                updatedStudent.setDateOfBirth(student.getDateOfBirth());
-            }
-            if (student.getEnrollmentYear() != null) {
-                updatedStudent.setEnrollmentYear(student.getEnrollmentYear());
-            }
-            if (student.getGraduationYear() != null) {
-                updatedStudent.setGraduationYear(student.getGraduationYear());
-            }
-            if (student.isGraduated() != null) {
-                updatedStudent.setGraduated(student.isGraduated());
-            }
-            if (student.getSchoolYear() != null) {
-                updatedStudent.setSchoolYear(student.getSchoolYear());
-            }
-            if (student.isPrefect() != null) {
-                updatedStudent.setPrefect(student.isPrefect());
-            }
-
-            return repository.save(updatedStudent);
+    public StudentDTO patch(StudentDTO studentDTO, Long id) {
+        var studentEntity = repository.findById(id).orElse(null);
+        if(studentEntity == null){
+            return null;
         }
-        return null;
+        if (studentDTO.getHouseName() != null) {
+            var house = houseService.get(studentDTO.getHouseName());
+            studentEntity.setHouse(house);
+        }
+        if (studentDTO.getName() != null) {
+            studentEntity.setFirstName(studentDTO.getFirstName());
+            studentEntity.setMiddleName(studentDTO.getMiddleName());
+            studentEntity.setLastName(studentDTO.getLastName());
+        }
+        if (studentDTO.getDateOfBirth() != null) {
+            studentEntity.setDateOfBirth(studentDTO.getDateOfBirth());
+        }
+        if (studentDTO.getEnrollmentYear() != null) {
+            studentEntity.setEnrollmentYear(studentDTO.getEnrollmentYear());
+        }
+        if (studentDTO.getGraduationYear() != null) {
+            studentEntity.setGraduationYear(studentDTO.getGraduationYear());
+        }
+        if (studentDTO.isGraduated() != null) {
+            studentEntity.setGraduated(studentDTO.isGraduated());
+        }
+        if (studentDTO.getSchoolYear() != null) {
+            studentEntity.setSchoolYear(studentDTO.getSchoolYear());
+        }
+        if (studentDTO.isPrefect() != null) {
+            studentEntity.setPrefect(studentDTO.isPrefect());
+        }
+
+        return convertToDTO(repository.save(studentEntity));
     }
 }

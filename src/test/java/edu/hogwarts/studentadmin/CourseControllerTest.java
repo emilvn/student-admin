@@ -1,5 +1,7 @@
 package edu.hogwarts.studentadmin;
 
+import edu.hogwarts.studentadmin.dto.CourseDTO;
+import edu.hogwarts.studentadmin.dto.StudentDTO;
 import edu.hogwarts.studentadmin.model.Course;
 import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.service.CourseService;
@@ -43,17 +45,17 @@ public class CourseControllerTest {
      */
     @Test
     public void testStudentSchoolYearMatching() throws Exception{
-        var studentCanAdd = new Student();
+        var studentCanAdd = new StudentDTO();
         studentCanAdd.setSchoolYear(1);
-        var studentCannotAdd = new Student();
+        var studentCannotAdd = new StudentDTO();
         studentCannotAdd.setSchoolYear(2);
 
-        var courseStart = new Course();
+        var courseStart = new CourseDTO();
         courseStart.setId(1L);
         courseStart.setSchoolYear(1);
         courseStart.setStudents(new ArrayList<>());
 
-        var courseEnd = new Course();
+        var courseEnd = new CourseDTO();
         courseEnd.setId(1L);
         courseEnd.setSchoolYear(1);
         courseEnd.setStudents(List.of(studentCanAdd));
@@ -76,10 +78,10 @@ public class CourseControllerTest {
      */
     @Test
     public void testStudentSchoolYearNotMatching() throws Exception{
-        var studentCannotAdd = new Student();
+        var studentCannotAdd = new StudentDTO();
         studentCannotAdd.setSchoolYear(2);
 
-        var course = new Course();
+        var course = new CourseDTO();
         course.setId(1L);
         course.setSchoolYear(1);
         course.setStudents(new ArrayList<>());

@@ -14,8 +14,8 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String subject;
-    private int schoolYear;
-    private boolean current;
+    private Integer schoolYear;
+    private Boolean current;
     @ManyToOne(fetch = FetchType.EAGER)
     private Teacher teacher;
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE})
@@ -49,19 +49,19 @@ public class Course {
         this.subject = subject;
     }
 
-    public int getSchoolYear() {
+    public Integer getSchoolYear() {
         return schoolYear;
     }
 
-    public void setSchoolYear(int schoolYear) {
+    public void setSchoolYear(Integer schoolYear) {
         this.schoolYear = schoolYear;
     }
 
-    public boolean isCurrent() {
+    public Boolean isCurrent() {
         return current;
     }
 
-    public void setCurrent(boolean current) {
+    public void setCurrent(Boolean current) {
         this.current = current;
     }
 

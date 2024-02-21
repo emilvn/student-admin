@@ -1,13 +1,15 @@
 package edu.hogwarts.studentadmin.service;
 
+import edu.hogwarts.studentadmin.dto.CourseDTO;
+import edu.hogwarts.studentadmin.dto.StudentDTO;
+import edu.hogwarts.studentadmin.dto.TeacherDTO;
 import edu.hogwarts.studentadmin.model.Course;
-import edu.hogwarts.studentadmin.model.Student;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.CourseRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class provides service methods to manage courses in the school.
@@ -31,12 +33,53 @@ public class CourseService {
         this.studentService = studentService;
     }
 
+    public CourseDTO convertToDTO(Course course) {
+        var courseDTO = new CourseDTO();
+        if(course.getId() != null) {
+            courseDTO.setId(course.getId());
+        }
+        courseDTO.setSubject(course.getSubject());
+        courseDTO.setSchoolYear(course.getSchoolYear());
+        courseDTO.setCurrent(course.isCurrent());
+        if (course.getTeacher() != null) {
+            courseDTO.setTeacher(teacherService.convertToDTO(course.getTeacher()));
+        }
+        if (course.getStudents() != null) {
+            var studentDTOs = course.getStudents().stream().map(studentService::convertToDTO).toList();
+            if(studentDTOs.stream().allMatch(Objects::nonNull)) {
+                courseDTO.setStudents(studentDTOs);
+            }
+        }
+        return courseDTO;
+    }
+
+    public Course convertToEntity(CourseDTO courseDTO) {
+        var courseEntity = new Course();
+        if(courseDTO.getId() != null){
+            courseEntity.setId(courseDTO.getId());
+        }
+        courseEntity.setSubject(courseDTO.getSubject());
+        courseEntity.setSchoolYear(courseDTO.getSchoolYear());
+        courseEntity.setCurrent(courseDTO.isCurrent());
+        if (courseDTO.getTeacher() != null) {
+            courseEntity.setTeacher(teacherService.getEntity(courseDTO.getTeacher().getId()));
+        }
+        if (courseDTO.getStudents() != null) {
+            var studentEntities = courseDTO.getStudents().stream().map(s-> studentService.getEntity(s.getId())).toList();
+            if(studentEntities.stream().allMatch(Objects::nonNull)) {
+                courseEntity.setStudents(studentEntities);
+            }
+        }
+        return courseEntity;
+    }
+
     /**
      * Gets list of all courses from the database
      * @return List of all courses
      */
-    public List<Course> getAll() {
-        return courseRepository.findAll();
+    public List<CourseDTO> getAll() {
+        var courses = courseRepository.findAll();
+        return courses.stream().map(this::convertToDTO).toList();
     }
 
     /**
@@ -44,169 +87,150 @@ public class CourseService {
      * @param id The id of the course
      * @return The course with the given id, or null if it doesn't exist
      */
-    public Course get(Long id) {
-        return courseRepository.findById(id).orElse(null);
+    public CourseDTO get(Long id) {
+        var course = courseRepository.findById(id).orElse(null);
+        if (course == null) {
+            return null;
+        }
+        return convertToDTO(course);
     }
 
 
     /**
      * Creates a new course.
      * If the teacher or students are not null, they are fetched from the database to ensure they exist.
-     * @param course The course to create
+     * @param courseDTO The course to create
      * @return The created course
      */
-    public Course create(Course course) {
-        if (course.getTeacher() != null) {
-            var teacher = teacherService.get(course.getTeacher().getId());
-            course.setTeacher(teacher);
-        }
-        if (course.getStudents() != null) {
-            var students = course.getStudents()
-                    .stream()
-                    .map(student -> studentService.get(student.getId()))
-                    .toList();
-            course.setStudents(students);
-        }
-        return courseRepository.save(course);
+    public CourseDTO create(CourseDTO courseDTO) {
+        var courseEntity = convertToEntity(courseDTO);
+        return convertToDTO(courseRepository.save(courseEntity));
     }
 
     /**
      * Updates a course overwriting all its fields with the new course data.
      * @param id The id of the course to update
-     * @param course The new course data
+     * @param courseDTO The new course data
      * @return The updated course, or null if the course doesn't exist
      */
-    public Course update(Long id, Course course) {
-        var courseToUpdate = get(id);
-        if (courseToUpdate == null) {
+    public CourseDTO update(Long id, CourseDTO courseDTO) {
+        var courseEntity = courseRepository.findById(id).orElse(null);
+        if (courseEntity == null) {
             return null;
         }
-        courseToUpdate.setSubject(course.getSubject());
-        if (course.getTeacher() != null) {
-            var teacher = teacherService.get(course.getTeacher().getId());
-            courseToUpdate.setTeacher(teacher);
-        } else {
-            courseToUpdate.setTeacher(null);
-        }
-        if (course.getStudents() != null) {
-            var students = course.getStudents()
-                    .stream()
-                    .map(student -> studentService.get(student.getId()))
-                    .toList();
-            courseToUpdate.setStudents(new ArrayList<>(students));
-        } else {
-            courseToUpdate.setStudents(new ArrayList<>());
-        }
-        courseToUpdate.setSchoolYear(course.getSchoolYear());
-        courseToUpdate.setCurrent(course.isCurrent());
-        return courseRepository.save(courseToUpdate);
+        courseEntity = convertToEntity(courseDTO);
+        return convertToDTO(courseRepository.save(courseEntity));
     }
 
     /**
      * Updates a course overwriting only the fields that are not null in the new course data.
      * @param id The id of the course to update
-     * @param course The new course data
+     * @param courseDTO The new course data
      * @return The updated course, or null if the course doesn't exist
      */
-    public Course patch(Long id, Course course) {
-        var courseToUpdate = get(id);
-        if (courseToUpdate == null) {
+    public CourseDTO patch(Long id, CourseDTO courseDTO) {
+        var courseEntity = courseRepository.findById(id).orElse(null);
+        if (courseEntity == null) {
             return null;
         }
-        if (course.getSubject() != null) {
-            courseToUpdate.setSubject(course.getSubject());
+
+        if (courseDTO.getSubject() != null) {
+            courseEntity.setSubject(courseDTO.getSubject());
         }
-        if (course.getTeacher() != null) {
-            var teacher = teacherService.get(course.getTeacher().getId());
-            courseToUpdate.setTeacher(teacher);
+
+        if (courseDTO.getTeacher() != null) {
+            var teacher = teacherService.getEntity(courseDTO.getTeacher().getId());
+            courseEntity.setTeacher(teacher);
         }
-        if (course.getStudents() != null) {
-            var students = course.getStudents();
-            if (!students.isEmpty()) {
-                students = students.stream()
-                        .map(student -> studentService.get(student.getId()))
-                        .toList();
-                courseToUpdate.setStudents(students);
-            }
+
+        if (courseDTO.getStudents() != null) {
+            var studentEntities = courseDTO.getStudents()
+                    .stream()
+                    .map(student -> studentService.getEntity(student.getId()))
+                    .toList();
+            courseEntity.setStudents(studentEntities);
         }
-        if (course.getSchoolYear() != 0) {
-            courseToUpdate.setSchoolYear(course.getSchoolYear());
+
+        if (courseDTO.getSchoolYear() != null) {
+            courseEntity.setSchoolYear(courseDTO.getSchoolYear());
         }
-        courseToUpdate.setCurrent(course.isCurrent());
-        return courseRepository.save(courseToUpdate);
+
+        if (courseDTO.isCurrent() != null) {
+            courseEntity.setCurrent(courseDTO.isCurrent());
+        }
+
+        return convertToDTO(courseRepository.save(courseEntity));
     }
 
     /**
      * Updates the teacher of a course.
      * @param id The id of the course to update
-     * @param teacher The new teacher
+     * @param teacherDTO The new teacher
      * @return The updated course, or null if the course doesn't exist or the teacher doesn't exist
      */
-    public Course updateTeacher(Long id, Teacher teacher) {
-        var course = get(id);
-        if (course == null) {
+    public CourseDTO updateTeacher(Long id, TeacherDTO teacherDTO) {
+        var courseEntity = courseRepository.findById(id).orElse(null);
+        if (courseEntity == null) {
             return null;
         }
-        if (course.getStudents() == null) {
-            course.setStudents(new ArrayList<>());
+
+        Teacher teacherEntity;
+        if(teacherDTO != null){
+            teacherEntity = teacherService.getEntity(teacherDTO.getId());
+        } else {
+            teacherEntity = null;
         }
-        if (teacher == null) {
-            course.setTeacher(null);
-        } else if (teacherService.get(teacher.getId()) == null) {
-            return null;
-        }
-        course.setTeacher(teacher);
-        return courseRepository.save(course);
+
+        courseEntity.setTeacher(teacherEntity);
+        return convertToDTO(courseRepository.save(courseEntity));
     }
 
     /**
      * Adds students to a course, finding them by their names.
      * @param id The id of the course to update
-     * @param students The new students as a list of Student objects with at least their names set
+     * @param studentDTOS The new students as a list of Student objects with at least their names set
      * @return The updated course, or null if the course doesn't exist
      */
-    public Course addStudentsByName(Long id, List<Student> students) {
-        var course = get(id);
-        if (course == null) {
+    public CourseDTO addStudentsByName(Long id, List<StudentDTO> studentDTOS) {
+        var courseEntity = courseRepository.findById(id).orElse(null);
+        if (courseEntity == null) {
             return null;
         }
-        if (course.getStudents() == null) {
-            course.setStudents(new ArrayList<>());
-        }
-        var studentsToAdd = students.stream()
+
+        var studentEntities = studentDTOS
+                .stream()
                 .map(student -> studentService.get(student.getName()))
                 .toList();
-        for (var student : studentsToAdd) {
-            if (!course.getStudents().contains(student)) {
-                course.getStudents().add(student);
-            }
+        if(studentEntities.stream().allMatch(Objects::nonNull)){
+            courseEntity.getStudents().addAll(studentEntities);
         }
-        return courseRepository.save(course);
+        return convertToDTO(courseRepository.save(courseEntity));
     }
 
     /**
      * Adds students to a course, finding them by their ids.
      * @param id The id of the course to update
-     * @param students The new students as a list of Student objects with at least their ids set
+     * @param studentDTOS The new students as a list of Student objects with at least their ids set
      * @return The updated course, or null if the course doesn't exist
      */
-    public Course addStudentsById(Long id, List<Student> students) {
-        var course = get(id);
-        if (course == null) {
+    public CourseDTO addStudentsById(Long id, List<StudentDTO> studentDTOS) {
+        var courseEntity = courseRepository.findById(id).orElse(null);
+        if (courseEntity == null) {
             return null;
         }
-        if (course.getStudents() == null) {
-            course.setStudents(new ArrayList<>());
+
+        if(studentDTOS.isEmpty()){
+            return convertToDTO(courseEntity);
         }
-        var studentsToAdd = students.stream()
-                .map(student -> studentService.get(student.getId()))
+
+        var studentEntities = studentDTOS
+                .stream()
+                .map(student -> studentService.getEntity(student.getId()))
                 .toList();
-        for (var student : studentsToAdd) {
-            if (!course.getStudents().contains(student)) {
-                course.getStudents().add(student);
-            }
+        if(studentEntities.stream().allMatch(Objects::nonNull)){
+            courseEntity.getStudents().addAll(studentEntities);
         }
-        return courseRepository.save(course);
+        return convertToDTO(courseRepository.save(courseEntity));
     }
 
     /**
@@ -222,7 +246,7 @@ public class CourseService {
      * @param id The id of the course to update
      */
     public void removeTeacher(Long id) {
-        var course = get(id);
+        var course = courseRepository.findById(id).orElse(null);
         if (course == null) {
             return;
         }
@@ -236,12 +260,12 @@ public class CourseService {
      * @param studentId The id of the student to remove
      */
     public void removeStudent(Long id, Long studentId) {
-        var course = get(id);
+        var course = courseRepository.findById(id).orElse(null);
         if (course == null) {
             return;
         }
         var students = course.getStudents();
-        var student = studentService.get(studentId);
+        var student = studentService.getEntity(studentId);
         if (!students.contains(student)) {
             return;
         }

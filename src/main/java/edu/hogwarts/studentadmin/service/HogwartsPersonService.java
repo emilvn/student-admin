@@ -1,6 +1,8 @@
 package edu.hogwarts.studentadmin.service;
 
+import edu.hogwarts.studentadmin.dto.HogwartsPersonDTO;
 import edu.hogwarts.studentadmin.model.HogwartsPerson;
+import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.repository.HogwartsPersonRepository;
 
 import java.util.List;
@@ -8,8 +10,9 @@ import java.util.List;
 /**
  * This class provides service methods to manage HogwartsPerson entities in the school.
  * @param <M> The type of HogwartsPerson (Student | Teacher).
+ * @param <D> The DTO for the HogwartsPerson (StudentDTO | TeacherDTO).
  */
-public abstract class HogwartsPersonService<M extends HogwartsPerson> {
+public abstract class HogwartsPersonService<M extends HogwartsPerson, D extends HogwartsPersonDTO> {
     protected final HouseService houseService;
     protected final HogwartsPersonRepository<M> repository;
 
@@ -27,35 +30,24 @@ public abstract class HogwartsPersonService<M extends HogwartsPerson> {
      * Gets a list of all the HogwartsPerson entities of the given type.
      * @return A list of all HogwartsPerson entities of the given type.
      */
-    public List<M> getAll() {
-        return repository.findAll();
-    }
+    public abstract List<D> getAll();
 
     /**
      * Gets a HogwartsPerson entity by its ID.
      * @param id The ID of the HogwartsPerson entity to find.
      * @return The HogwartsPerson entity, or null if it does not exist.
      */
-    public M get(Long id) {
+    public abstract D get(Long id);
+
+    public M getEntity(Long id) {
         return repository.findById(id).orElse(null);
     }
 
-    /**
-     * Creates a new HogwartsPerson entity.
-     * Uses the HouseService to get the House entity by its name and set it on the HogwartsPerson entity.
-     * @param person The HogwartsPerson entity to create.
-     * @return The created HogwartsPerson entity.
-     */
-    public M create(M person) {
-        var house = houseService.get(person.getHouseName());
-        System.out.println(house);
-        person.setHouse(house);
-        return repository.save(person);
-    }
+    public abstract D create(D personDTO);
 
-    public abstract M update(M person, Long id);
+    public abstract D update(D person, Long id);
 
-    public abstract M patch(M person, Long id);
+    public abstract D patch(D person, Long id);
 
     /**
      * Deletes a HogwartsPerson entity by its ID.

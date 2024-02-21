@@ -1,6 +1,5 @@
 package edu.hogwarts.studentadmin.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PreRemove;
@@ -10,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents a student at Hogwarts.
+ * This entity class represents a student at Hogwarts.
  */
 @Entity(name = "student")
 public class Student extends HogwartsPerson {
@@ -51,12 +50,10 @@ public class Student extends HogwartsPerson {
         }
     }
 
-    @JsonIgnore
     public List<Course> getCourses() {
         return courses;
     }
 
-    @JsonIgnore
     public void setCourses(List<Course> courses) {
         this.courses = courses;
     }

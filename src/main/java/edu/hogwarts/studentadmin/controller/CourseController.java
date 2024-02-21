@@ -1,8 +1,8 @@
 package edu.hogwarts.studentadmin.controller;
 
-import edu.hogwarts.studentadmin.model.Course;
-import edu.hogwarts.studentadmin.model.Student;
-import edu.hogwarts.studentadmin.model.Teacher;
+import edu.hogwarts.studentadmin.dto.CourseDTO;
+import edu.hogwarts.studentadmin.dto.StudentDTO;
+import edu.hogwarts.studentadmin.dto.TeacherDTO;
 import edu.hogwarts.studentadmin.service.CourseService;
 import edu.hogwarts.studentadmin.service.StudentService;
 import edu.hogwarts.studentadmin.service.TeacherService;
@@ -42,7 +42,7 @@ public class CourseController {
      * @return An HTTP response containing a list of all courses or a 204 status code if there are no courses
      */
     @GetMapping
-    public ResponseEntity<List<Course>> getAll() {
+    public ResponseEntity<List<CourseDTO>> getAll() {
         var courses = courseService.getAll();
         if (courses.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -72,7 +72,7 @@ public class CourseController {
      * @return An HTTP response containing the teacher of the course with the given id, a 404 if the course doesn't exist, or a 204 status code if it doesn't have a teacher
      */
     @GetMapping("/{id}/teacher")
-    public ResponseEntity<Teacher> getTeacher(@PathVariable("id") Long id) {
+    public ResponseEntity<TeacherDTO> getTeacher(@PathVariable("id") Long id) {
         var course = courseService.get(id);
         if (course == null) {
             return ResponseEntity.notFound().build();
@@ -91,7 +91,7 @@ public class CourseController {
      * @return An HTTP response containing the students of the course with the given id, a 404 if the course doesn't exist, or a 204 status code if it doesn't have students
      */
     @GetMapping("/{id}/students")
-    public ResponseEntity<List<Student>> getStudents(@PathVariable("id") Long id) {
+    public ResponseEntity<List<StudentDTO>> getStudents(@PathVariable("id") Long id) {
         var course = courseService.get(id);
         if (course == null) {
             return ResponseEntity.notFound().build();
@@ -110,7 +110,7 @@ public class CourseController {
      * @return An HTTP response containing the created course, or a 400 status code if the course data is invalid
      */
     @PostMapping
-    public ResponseEntity<Object> create(@RequestBody Course course) {
+    public ResponseEntity<Object> create(@RequestBody CourseDTO course) {
         if (course.getTeacher() != null) {
             if (teacherService.get(course.getTeacher().getId()) == null) {
                 return ResponseEntity.badRequest().body("Invalid teacher id.");
@@ -122,7 +122,7 @@ public class CourseController {
                 return ResponseEntity.badRequest().body("Invalid student id(s).");
             }
             for (var student : course.getStudents()) {
-                if (studentService.get(student.getName()).getSchoolYear() != course.getSchoolYear()) {
+                if (studentService.get(student.getId()).getSchoolYear() != course.getSchoolYear()) {
                     return ResponseEntity.badRequest().body("Invalid school year for student(s).");
                 }
             }
@@ -138,7 +138,7 @@ public class CourseController {
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist, or a 400 status code if the course data is invalid
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Object> update(@RequestBody Course course, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> update(@RequestBody CourseDTO course, @PathVariable("id") Long id) {
         if (course.getTeacher() != null) {
             if (teacherService.get(course.getTeacher().getId()) == null) {
                 return ResponseEntity.badRequest().body("Invalid teacher id.");
@@ -170,7 +170,7 @@ public class CourseController {
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist, or a 400 status code if the course data is invalid
      */
     @PatchMapping("/{id}")
-    public ResponseEntity<Object> patch(@RequestBody Course course, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> patch(@RequestBody CourseDTO course, @PathVariable("id") Long id) {
         if (course.getTeacher() != null) {
             if (teacherService.get(course.getTeacher().getId()) == null) {
                 return ResponseEntity.badRequest().body("Invalid teacher id.");
@@ -202,7 +202,7 @@ public class CourseController {
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist
      */
     @PutMapping("/{id}/teacher")
-    public ResponseEntity<Object> updateTeacher(@RequestBody Teacher teacher, @PathVariable("id") Long id) {
+    public ResponseEntity<Object> updateTeacher(@RequestBody TeacherDTO teacher, @PathVariable("id") Long id) {
         var updatedCourse = courseService.updateTeacher(id, teacher);
         if (updatedCourse == null) {
             return ResponseEntity.notFound().build();
@@ -218,8 +218,8 @@ public class CourseController {
      * @return An HTTP response containing the updated course, or a 404 status code if the course doesn't exist, or a 400 status code if the student data is invalid
      */
     @PostMapping("/{id}/students")
-    public ResponseEntity<Object> addStudents(@PathVariable("id") Long id, @RequestBody List<Student> students) {
-        Course updatedCourse;
+    public ResponseEntity<Object> addStudents(@PathVariable("id") Long id, @RequestBody List<StudentDTO> students) {
+        CourseDTO updatedCourse;
         var useIds = students.stream().allMatch(student -> student.getId() != null);
         var useNames = students.stream().allMatch(student -> student.getName() != null);
         if (!useIds && !useNames) {
@@ -261,7 +261,7 @@ public class CourseController {
      * @return An HTTP response containing the deleted course, or a 404 status code if the course doesn't exist
      */
     @DeleteMapping("/{id}")
-    public ResponseEntity<Course> delete(@PathVariable("id") Long id) {
+    public ResponseEntity<CourseDTO> delete(@PathVariable("id") Long id) {
         var course = courseService.get(id);
         if (course == null) {
             return ResponseEntity.notFound().build();

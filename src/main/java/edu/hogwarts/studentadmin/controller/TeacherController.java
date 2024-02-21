@@ -1,5 +1,6 @@
 package edu.hogwarts.studentadmin.controller;
 
+import edu.hogwarts.studentadmin.dto.TeacherDTO;
 import edu.hogwarts.studentadmin.model.Teacher;
 import edu.hogwarts.studentadmin.service.TeacherService;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/teachers")
 @CrossOrigin
-public class TeacherController extends HogwartsPersonController<Teacher, TeacherService> {
+public class TeacherController extends HogwartsPersonController<Teacher, TeacherDTO, TeacherService> {
     /**
      * Create a new TeacherController. Uses dependency injection to set the TeacherService.
      * @param teacherService The service for Teacher entities.
