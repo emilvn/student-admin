@@ -1,0 +1,6 @@
+edu.hogwarts.studentadmin
+edu.hogwarts.studentadmin.config
+edu.hogwarts.studentadmin.controller
+edu.hogwarts.studentadmin.model
+edu.hogwarts.studentadmin.repository
+edu.hogwarts.studentadmin.service
