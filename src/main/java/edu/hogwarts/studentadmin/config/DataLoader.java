@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.Arrays;
 
+/**
+ * Class to load initial data into the database
+ */
 @Component
 public class DataLoader implements CommandLineRunner {
     private final HouseRepository houseRepository;
