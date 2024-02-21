@@ -21,6 +21,11 @@ public class StudentService extends HogwartsPersonService<Student, StudentDTO> {
         super(studentRepository, houseService);
     }
 
+    /**
+     * Converts a student entity to a student DTO.
+     * @param student The student entity to convert.
+     * @return The student DTO.
+     */
     public StudentDTO convertToDTO(Student student) {
         var studentDTO = new StudentDTO();
         if(student.getId() != null) {
@@ -41,6 +46,11 @@ public class StudentService extends HogwartsPersonService<Student, StudentDTO> {
         return studentDTO;
     }
 
+    /**
+     * Converts a student DTO to a student entity.
+     * @param studentDTO The student DTO to convert.
+     * @return The student entity.
+     */
     public Student convertToEntity(StudentDTO studentDTO) {
         var studentEntity = new Student();
         if(studentDTO.getId() != null) {
@@ -117,7 +127,7 @@ public class StudentService extends HogwartsPersonService<Student, StudentDTO> {
 
     /**
      * Updates a student by their ID. Overwrites the entire student with the given student DTO.
-     * @param studentDTO the new student to replace the old student
+     * @param studentDTO the DTO of the new student to replace the old student
      * @param id the ID of the student to update
      * @return the updated student, or null if the student with the given ID is not found
      */
@@ -131,8 +141,9 @@ public class StudentService extends HogwartsPersonService<Student, StudentDTO> {
     }
 
     /**
-     * Updates a student by their ID. Updates only the non-null fields of the student with the given new student.
-     * @param studentDTO the new student to update the old student
+     * Updates a student by their ID, from a partial student DTO.
+     * Updates only the non-null fields of the student with the given new student DTO.
+     * @param studentDTO the DTO of new student to update the old student
      * @param id the ID of the student to update
      * @return the updated student, or null if the student with the given ID is not found
      */

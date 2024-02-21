@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * Controller superclass for HogwartsPerson entities.
  * @param <M> The type of HogwartsPerson (Student | Teacher).
+ * @param <D> The DTO for the HogwartsPerson (StudentDTO | TeacherDTO).
  * @param <S> The service for the HogwartsPerson (StudentService | TeacherService).
  */
 public abstract class HogwartsPersonController<M extends HogwartsPerson, D extends HogwartsPersonDTO, S extends HogwartsPersonService<M, D>> {

@@ -33,6 +33,12 @@ public class CourseService {
         this.studentService = studentService;
     }
 
+    /**
+     * Converts a course entity to a course DTO.
+     * If the teacher or students are not null, they are fetched from the database to ensure they exist.
+     * @param course The course entity to convert.
+     * @return The course DTO.
+     */
     public CourseDTO convertToDTO(Course course) {
         var courseDTO = new CourseDTO();
         if(course.getId() != null) {
@@ -53,6 +59,12 @@ public class CourseService {
         return courseDTO;
     }
 
+    /**
+     * Converts a course DTO to a course entity.
+     * If the teacher or students are not null, they are fetched from the database to ensure they exist.
+     * @param courseDTO The course DTO to convert.
+     * @return The course entity.
+     */
     public Course convertToEntity(CourseDTO courseDTO) {
         var courseEntity = new Course();
         if(courseDTO.getId() != null){
@@ -95,10 +107,8 @@ public class CourseService {
         return convertToDTO(course);
     }
 
-
     /**
      * Creates a new course.
-     * If the teacher or students are not null, they are fetched from the database to ensure they exist.
      * @param courseDTO The course to create
      * @return The created course
      */
@@ -124,6 +134,7 @@ public class CourseService {
 
     /**
      * Updates a course overwriting only the fields that are not null in the new course data.
+     * If the teacher or students are not null, they are fetched from the database to ensure they exist.
      * @param id The id of the course to update
      * @param courseDTO The new course data
      * @return The updated course, or null if the course doesn't exist
@@ -164,6 +175,7 @@ public class CourseService {
 
     /**
      * Updates the teacher of a course.
+     * If the teacher is not null, it is fetched from the database to ensure it exists.
      * @param id The id of the course to update
      * @param teacherDTO The new teacher
      * @return The updated course, or null if the course doesn't exist or the teacher doesn't exist
@@ -187,6 +199,7 @@ public class CourseService {
 
     /**
      * Adds students to a course, finding them by their names.
+     * If the students are not null, they are fetched from the database to ensure they exist.
      * @param id The id of the course to update
      * @param studentDTOS The new students as a list of Student objects with at least their names set
      * @return The updated course, or null if the course doesn't exist
@@ -209,6 +222,7 @@ public class CourseService {
 
     /**
      * Adds students to a course, finding them by their ids.
+     * If the students are not null, they are fetched from the database to ensure they exist.
      * @param id The id of the course to update
      * @param studentDTOS The new students as a list of Student objects with at least their ids set
      * @return The updated course, or null if the course doesn't exist

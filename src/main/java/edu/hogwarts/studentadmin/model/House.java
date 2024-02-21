@@ -1,6 +1,5 @@
 package edu.hogwarts.studentadmin.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -58,26 +57,6 @@ public class House {
     public void setColors(List<String> colors) {
         this.primaryColor = colors.get(0);
         this.secondaryColor = colors.get(1);
-    }
-
-    @JsonIgnore
-    public String getPrimaryColor() {
-        return primaryColor;
-    }
-
-    @JsonIgnore
-    public void setPrimaryColor(String color1) {
-        this.primaryColor = color1;
-    }
-
-    @JsonIgnore
-    public String getSecondaryColor() {
-        return secondaryColor;
-    }
-
-    @JsonIgnore
-    public void setSecondaryColor(String color2) {
-        this.secondaryColor = color2;
     }
 
     @Override

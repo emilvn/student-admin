@@ -21,6 +21,11 @@ public class TeacherService extends HogwartsPersonService<Teacher, TeacherDTO> {
         super(repository, houseService);
     }
 
+    /**
+     * Converts a teacher entity to a teacher DTO.
+     * @param teacher The teacher entity to convert.
+     * @return The teacher DTO.
+     */
     public TeacherDTO convertToDTO(Teacher teacher) {
         var teacherDTO = new TeacherDTO();
         if(teacher.getId() != null) {
@@ -40,6 +45,11 @@ public class TeacherService extends HogwartsPersonService<Teacher, TeacherDTO> {
         return teacherDTO;
     }
 
+    /**
+     * Converts a teacher DTO to a teacher entity.
+     * @param teacherDTO The teacher DTO to convert.
+     * @return The teacher entity.
+     */
     public Teacher convertToEntity(TeacherDTO teacherDTO) {
         var teacherEntity = new Teacher();
         if(teacherDTO.getId() != null) {
@@ -92,7 +102,7 @@ public class TeacherService extends HogwartsPersonService<Teacher, TeacherDTO> {
 
     /**
      * Updates a teacher by their ID. Overwrites the entire teacher with the given teacher DTO.
-     * @param teacherDTO the teacher to update
+     * @param teacherDTO the DTO of teacher to update
      * @param id the id of the teacher to update
      * @return the updated teacher or null if the teacher was not found
      */
@@ -106,8 +116,9 @@ public class TeacherService extends HogwartsPersonService<Teacher, TeacherDTO> {
     }
 
     /**
-     * Updates a teacher by their ID. Overwrites only the fields of the teacher that are not null in the new teacher.
-     * @param teacherDTO the teacher to update
+     * Updates a teacher by their ID, with a given partial teacher DTO.
+     * Overwrites only the fields of the teacher that are not null in the new teacher DTO.
+     * @param teacherDTO the DTO of the teacher to update
      * @param id the id of the teacher to update
      * @return the updated teacher or null if the teacher was not found
      */
