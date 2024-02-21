@@ -8,6 +8,9 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.Period;
 
+/**
+ * A person in the Harry Potter universe.
+ */
 @MappedSuperclass
 public abstract class HogwartsPerson {
     @Id
